@@ -1,0 +1,110 @@
+<div class="form-page">
+    <div class="form-shell">
+        <h2>Send an inquiry</h2>
+
+        <p class="lead">Tell the architect what you're planning and how to reach you.</p>
+
+        <div class="form-error" *ngIf="errorMessage">
+            {{ errorMessage }}
+        </div>
+
+        <div class="form-card" *ngIf="isLoading">
+            <div class="loading-row">
+                <span class="spinner"></span> Loading architect...
+            </div>
+        </div>
+
+        <div class="form-card" *ngIf="!isLoading && architect">
+            <form #inquiryForm="ngForm" (ngSubmit)="save()" novalidate>
+                <div class="arch-summary">
+                    <span class="avatar lg">{{ (architect.name || "").charAt(0) | uppercase }}</span>
+
+                    <div class="arch-summary-text">
+                        <span class="arch-summary-label">Sending to</span>
+                        <strong>{{ architect.name }}</strong>
+                        <span class="arch-summary-meta">
+                            <span class="tag">{{ architect.expertise }}</span>
+                            {{ architect.location }}
+                        </span>
+                    </div>
+
+                    <span class="rating" *ngIf="architect.rating"><span class="star">&#9733;</span>{{ architect.rating }}</span>
+                    <span class="rating" *ngIf="!architect.rating">New</span>
+                </div>
+
+                <div class="field">
+                    <label for="message">Message</label>
+
+                    <textarea class="textarea" id="message" name="message" [(ngModel)]="message" #msg="ngModel"
+                        required minlength="10"
+                        placeholder="Describe your project, the site, and what you need help with."></textarea>
+
+                    <div class="field-error" *ngIf="msg.errors?.['required'] && msg.touched">
+                        Message is required
+                    </div>
+
+                    <div class="field-error" *ngIf="msg.errors?.['minlength'] && msg.touched">
+                        Message must be at least 10 characters
+                    </div>
+                </div>
+
+                <div class="field-row">
+                    <div class="field">
+                        <label for="priority">Priority</label>
+
+                        <select class="select" id="priority" name="priority" [(ngModel)]="priority" required>
+                            <option *ngFor="let option of priorityOptions" [value]="option">{{ option }}</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="contactDetails">Phone number</label>
+
+                        <input class="input" type="tel" id="contactDetails" name="contactDetails" maxlength="10"
+                            inputmode="numeric" [(ngModel)]="contactDetails" #contact="ngModel" required
+                            pattern="[6-9][0-9]{9}" placeholder="10-digit mobile number" />
+
+                        <div class="field-error" *ngIf="contact.errors?.['required'] && contact.touched">
+                            Phone number is required
+                        </div>
+
+                        <div class="field-error" *ngIf="contact.errors?.['pattern'] && contact.touched">
+                            Enter a valid 10-digit mobile number
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-buttons">
+                    <button class="btn-secondary" type="button" (click)="cancel()">Cancel</button>
+
+                    <button class="btn" type="submit" [disabled]="inquiryForm.invalid || isSaving">
+                        <span class="spinner" *ngIf="isSaving"></span>
+                        {{ isSaving ? "Sending..." : "Send Inquiry" }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal" *ngIf="alert.show" role="alertdialog" aria-modal="true" aria-labelledby="alertTitle" tabindex="0"
+    (keydown)="handleModalKeydown($event)">
+    <div class="modal-card">
+        <div class="modal-icon" [class.success]="alert.type === 'success'" [class.error]="alert.type === 'error'">
+            <svg *ngIf="alert.type === 'success'" class="icon" viewBox="0 0 24 24">
+                <path d="M20 6L9 17l-5-5" />
+            </svg>
+
+            <svg *ngIf="alert.type === 'error'" class="icon" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 8v4M12 16h.01" />
+            </svg>
+        </div>
+
+        <h3 id="alertTitle">{{ alert.title }}</h3>
+
+        <p>{{ alert.message }}</p>
+
+        <button class="btn btn-block" type="button" (click)="closeAlert()">OK</button>
+    </div>
+</div>

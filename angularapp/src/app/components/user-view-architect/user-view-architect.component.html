@@ -1,0 +1,157 @@
+<div class="page">
+    <div class="page-inner">
+
+        <div class="page-head">
+            <div>
+                <h2 class="page-title">Find an Architect</h2>
+                <p class="subtitle">
+                    Browse by expertise, location and rating, then send an inquiry
+                </p>
+            </div>
+
+            <span class="count" *ngIf="architects.length > 0">
+                {{ filteredArchitects.length }} of {{ architects.length }}
+                {{ architects.length === 1 ? 'architect' : 'architects' }}
+            </span>
+        </div>
+
+        <div class="empty" *ngIf="architects.length === 0">
+            No architects found.
+        </div>
+
+        <div class="toolbar" *ngIf="architects.length > 0">
+
+            <div class="search">
+                <input class="input" type="text" placeholder="Search by name, expertise or location" [value]="search"
+                    (input)="search = $any($event.target).value">
+            </div>
+
+            <select class="select" [value]="expertiseFilter" (change)="expertiseFilter = $any($event.target).value">
+
+                <option value="">All Expertise</option>
+                <option value="Residential">Residential</option>
+                <option value="Commercial">Commercial</option>
+                <option value="Interior Design">Interior Design</option>
+                <option value="Landscape">Landscape</option>
+                <option value="Urban Planning">Urban Planning</option>
+                <option value="Sustainable Design">Sustainable Design</option>
+
+            </select>
+
+            <select class="select" [value]="locationFilter" (change)="locationFilter = $any($event.target).value">
+
+                <option value="">All Locations</option>
+                <option *ngFor="let location of locations" [value]="location">{{ location }}</option>
+
+            </select>
+
+            <button class="btn-secondary" type="button" *ngIf="hasFilters" (click)="clearFilters()">
+
+                Clear
+
+            </button>
+
+        </div>
+
+        <div class="no-results" *ngIf="architects.length > 0 && filteredArchitects.length === 0">
+
+            No architects match your search.
+
+        </div>
+
+        <div class="cards" *ngIf="filteredArchitects.length > 0">
+
+            <article class="arch-card" *ngFor="let architect of filteredArchitects">
+
+                <header class="arch-head">
+
+                    <span class="avatar">
+                        {{ (architect.name || '').charAt(0) | uppercase }}
+                    </span>
+
+                    <div class="arch-ident">
+                        <h3>{{ architect.name }}</h3>
+                        <span class="arch-location">
+                            {{ architect.location }}
+                        </span>
+                    </div>
+
+                    <span class="status" [class.active]="architect.status === 'Active'"
+                        [class.inactive]="architect.status === 'Inactive'">
+                        {{ architect.status }}
+                    </span>
+
+                </header>
+
+                <dl class="arch-meta">
+
+                    <div>
+                        <dt>Expertise</dt>
+                        <dd>
+                            <span class="tag">
+                                {{ architect.expertise }}
+                            </span>
+                        </dd>
+                    </div>
+
+                    <div>
+                        <dt>Rating</dt>
+                        <dd>
+                            <span class="rating" *ngIf="architect.rating">
+                                ★ {{ architect.rating }}
+                            </span>
+                            <span class="rating" *ngIf="!architect.rating">
+                                New (no ratings yet)
+                            </span>
+                        </dd>
+                    </div>
+
+                </dl>
+
+                <a class="portfolio" [routerLink]="['/portfolio', architect.architectId]">
+
+                    View Portfolio
+
+                </a>
+
+                <footer class="arch-actions">
+
+                    <button class="btn" type="button" [disabled]="architect.status === 'Inactive'"
+                        (click)="sendInquiry(architect.architectId)">
+
+                        {{
+                        architect.status === 'Inactive'
+                        ? 'Currently unavailable'
+                        : 'Send Inquiry'
+                        }}
+
+                    </button>
+
+                </footer>
+
+            </article>
+
+        </div>
+
+    </div>
+</div>
+<div class="modal" *ngIf="showOngoingDialog" role="dialog" aria-modal="true" aria-labelledby="ongoingTitle">
+    <div class="modal-card">
+        <h3 id="ongoingTitle">Inquiry Already Going On</h3>
+
+        <p>
+            You already have an inquiry with this architect that is not closed yet.
+            Do you want to continue that inquiry or raise a new one?
+        </p>
+
+        <div class="modal-actions">
+            <button class="btn-secondary" type="button" (click)="raiseNewInquiry()">
+                New Inquiry
+            </button>
+
+            <button class="btn" type="button" (click)="continueInquiry()">
+                Continue Inquiry
+            </button>
+        </div>
+    </div>
+</div>

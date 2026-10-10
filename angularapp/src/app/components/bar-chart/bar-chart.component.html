@@ -1,0 +1,30 @@
+<figure class="chart">
+    <figcaption>
+        <h3>{{ heading }}</h3>
+        <p>{{ subtitle }}</p>
+    </figcaption>
+
+    <p class="no-data" *ngIf="total === 0">No data yet</p>
+
+    <div class="rows" *ngIf="total > 0 && orientation === 'rows'">
+        <div class="row" *ngFor="let bar of bars" tabindex="0" [attr.aria-label]="describe(bar)">
+            <span class="row-label">{{ bar.label }}</span>
+            <span class="row-track">
+                <span class="row-bar" [style.width.%]="size(bar)"></span>
+            </span>
+            <span class="value">{{ bar.value }}</span>
+            <span class="tip"><strong>{{ bar.value }}</strong> {{ bar.value === 1 ? unit : units }} · {{ share(bar) }}%</span>
+        </div>
+    </div>
+
+    <div class="columns" *ngIf="total > 0 && orientation === 'columns'">
+        <div class="column" *ngFor="let bar of bars" tabindex="0" [attr.aria-label]="describe(bar)">
+            <span class="column-plot">
+                <span class="value">{{ bar.value }}</span>
+                <span class="column-bar" [style.height.%]="size(bar)"></span>
+            </span>
+            <span class="column-label">{{ bar.label }}</span>
+            <span class="tip"><strong>{{ bar.value }}</strong> {{ bar.value === 1 ? unit : units }} · {{ share(bar) }}%</span>
+        </div>
+    </div>
+</figure>

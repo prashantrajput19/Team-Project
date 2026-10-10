@@ -1,0 +1,10 @@
+:host {
+    display: block;
+    aspect-ratio: 4 / 3;
+}
+
+svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}

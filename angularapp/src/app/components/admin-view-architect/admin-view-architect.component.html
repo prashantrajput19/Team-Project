@@ -1,0 +1,195 @@
+<div class="page">
+    <div class="page-inner">
+        <div class="page-head">
+            <div>
+                <h2 class="page-title">Architects</h2>
+                <p class="subtitle">Add, update and remove the architects listed on ArchitectPoint</p>
+            </div>
+
+            <span class="count" *ngIf="architects.length > 0">
+                {{ filteredArchitects.length }} of {{ architects.length }}
+                {{ architects.length === 1 ? "architect" : "architects" }}
+            </span>
+        </div>
+
+        <div class="form-error" *ngIf="errorMessage">
+            {{ errorMessage }}
+        </div>
+
+        <div class="loading-row" *ngIf="isLoading">
+            <span class="spinner"></span> Loading architects...
+        </div>
+
+        <div class="empty" *ngIf="!isLoading && architects.length === 0 && !errorMessage">
+            No Architects available. Add some Architect to view here.
+
+            <div class="empty-actions">
+                <a class="btn" routerLink="/admin/architects/add">Add Architect</a>
+            </div>
+        </div>
+
+        <div class="toolbar" *ngIf="architects.length > 0">
+            <div class="search">
+                <svg class="icon" viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="7" />
+                    <path d="M21 21l-4.3-4.3" />
+                </svg>
+
+                <input class="input" type="text" placeholder="Search by name or location" [value]="search"
+                    (input)="search = $any($event.target).value" />
+            </div>
+
+            <select class="select" [value]="expertiseFilter" (change)="expertiseFilter = $any($event.target).value">
+                <option value="">All expertise</option>
+                <option *ngFor="let expertise of expertiseOptions" [value]="expertise">{{ expertise }}</option>
+            </select>
+
+            <select class="select" [value]="statusFilter" (change)="statusFilter = $any($event.target).value">
+                <option value="">All statuses</option>
+                <option *ngFor="let status of statusOptions" [value]="status">{{ status }}</option>
+            </select>
+
+            <select class="select" [value]="sortBy" (change)="sortBy = $any($event.target).value">
+                <option value="">Sort: default</option>
+                <option value="userHigh">User rating: high to low</option>
+                <option value="userLow">User rating: low to high</option>
+                <option value="ratingHigh">Rating: high to low</option>
+                <option value="ratingLow">Rating: low to high</option>
+                <option value="activeFirst">Status: active first</option>
+                <option value="inactiveFirst">Status: inactive first</option>
+            </select>
+
+            <button class="btn-secondary" type="button" *ngIf="hasFilters" (click)="clearFilters()">
+                Clear
+            </button>
+
+            <a class="btn" routerLink="/admin/architects/add">
+                <svg class="icon" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 8v8M8 12h8" />
+                </svg>
+                Add
+            </a>
+        </div>
+
+        <div class="panel" *ngIf="architects.length > 0">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Expertise</th>
+                        <th>Location</th>
+                        <th>Rating</th>
+                        <th>Portfolio</th>
+                        <th>Status</th>
+                        <th class="right">Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr *ngIf="filteredArchitects.length === 0">
+                        <td colspan="7" class="no-results">No architects match your search</td>
+                    </tr>
+
+                    <tr *ngFor="let architect of filteredArchitects">
+                        <td class="nowrap">
+                            <div class="named">
+                                <span class="avatar">{{ (architect.name || "").charAt(0) | uppercase }}</span>
+                                <span class="named-text">{{ architect.name }}</span>
+                            </div>
+                        </td>
+
+                        <td class="nowrap"><span class="tag">{{ architect.expertise }}</span></td>
+
+                        <td class="nowrap cell-muted">{{ architect.location }}</td>
+
+                        <td class="nowrap">
+                            <span class="rating">
+                                <span class="star">&#9733;</span>{{ architect.rating }}
+                            </span>
+
+                            <div class="review-count" *ngIf="userRatings[architect.architectId!] as user">
+                                Users: &#9733; {{ user.average | number: "1.1-1" }} ({{ user.count }})
+                            </div>
+                        </td>
+
+                        <td class="nowrap">
+                            <a class="ext-link" [routerLink]="['/portfolio', architect.architectId]">View</a>
+                        </td>
+
+                        <td class="nowrap">
+                            <span class="status" [ngClass]="statusClass(architect.status)">
+                                {{ architect.status }}
+                            </span>
+                        </td>
+
+                        <td class="right nowrap">
+                            <div class="actions">
+                                <button class="btn-secondary" type="button"
+                                    (click)="editArchitect(architect.architectId)">
+                                    Update
+                                </button>
+
+                                <button class="btn-danger" type="button"
+                                    (click)="deleteArchitect(architect.architectId)">
+                                    Delete
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal" *ngIf="showDeleteModal" role="dialog" aria-modal="true" aria-labelledby="deleteTitle" tabindex="0"
+    (keydown)="handleModalKeydown($event)">
+    <div class="modal-card">
+        <div class="modal-icon error">
+            <svg class="icon" viewBox="0 0 24 24">
+                <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6" />
+            </svg>
+        </div>
+
+        <h3 id="deleteTitle">Delete Architect?</h3>
+
+        <p>
+            Are you sure you want to delete
+            <strong>{{ architectToDelete?.name }}</strong>? They will be removed from the listings, but their past inquiries and feedback are kept. All of their inquiries must be Closed.
+        </p>
+
+        <div class="modal-actions">
+            <button class="btn-secondary" type="button" [disabled]="isDeleting" (click)="closeDeleteModal()">
+                Cancel
+            </button>
+
+            <button class="btn-danger" type="button" [disabled]="isDeleting" (click)="confirmDelete()">
+                <span class="spinner" *ngIf="isDeleting"></span>
+                {{ isDeleting ? "Deleting..." : "Delete" }}
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="modal" *ngIf="alert.show" role="alertdialog" aria-modal="true" aria-labelledby="alertTitle" tabindex="0"
+    (keydown)="handleModalKeydown($event)">
+    <div class="modal-card">
+        <div class="modal-icon" [class.success]="alert.type === 'success'" [class.error]="alert.type === 'error'">
+            <svg *ngIf="alert.type === 'success'" class="icon" viewBox="0 0 24 24">
+                <path d="M20 6L9 17l-5-5" />
+            </svg>
+
+            <svg *ngIf="alert.type === 'error'" class="icon" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 8v4M12 16h.01" />
+            </svg>
+        </div>
+
+        <h3 id="alertTitle">{{ alert.title }}</h3>
+
+        <p>{{ alert.message }}</p>
+
+        <button class="btn btn-block" type="button" (click)="closeAlert()">OK</button>
+    </div>
+</div>

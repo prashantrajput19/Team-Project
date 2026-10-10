@@ -1,0 +1,54 @@
+.wall { fill: var(--ill-left); opacity: 0.35; }
+.wall2 { fill: var(--ill-right); opacity: 0.28; }
+.floor { fill: var(--ill-grid); }
+.rug { fill: var(--accent); opacity: 0.16; }
+.win-frame { fill: var(--ill-top); }
+.mullion { stroke: var(--ill-top); stroke-width: 3; }
+.pp { fill: var(--ill-top); opacity: 0.9; }
+.pp-line { fill: none; stroke: var(--ill-line); stroke-width: 1.4; }
+
+.wd { fill: #c9955c; }
+.wdl { fill: #a8763f; }
+.wdr { fill: #8f6232; }
+.ruler { fill: var(--accent); opacity: 0.55; }
+.pencil { stroke: var(--accent); stroke-width: 4; stroke-linecap: round; }
+.mug { fill: var(--ill-glass); }
+.mug-top { fill: #5b3a25; }
+.mt { fill: #4a5361; }
+.mt-top { fill: #6b7584; }
+.arm { stroke: #4a5361; stroke-width: 4; stroke-linecap: round; }
+.shade { fill: var(--accent); }
+.bulb { fill: #fff7d6; }
+.glow { fill: #ffe9a8; opacity: 0.22; }
+.bin { fill: var(--ill-sheet); }
+.bin-top { fill: #16324f; }
+.tube { fill: var(--ill-top); }
+.tube-top { fill: var(--ill-left); }
+.pot { fill: #b5653f; }
+.pot-top { fill: #5b3a25; }
+.badge { fill: var(--success); }
+.badge-ink { fill: none; stroke: #fff; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+.badge2 { fill: var(--ill-card); stroke: var(--ill-card-border); }
+.compass { fill: none; stroke: var(--accent); stroke-width: 2.4; stroke-linecap: round; }
+
+.cloud { fill: var(--ill-top); opacity: 0.75; }
+.lawn { fill: #8fcf8a; }
+.lawn-d { fill: #6fb36b; }
+.lawn-dd { fill: #5d9c5a; }
+.road { fill: #59606b; }
+.dash { stroke: #f4f1e8; stroke-width: 2; stroke-linecap: round; }
+.crane { fill: var(--accent); }
+.crane-l { fill: #d99a26; }
+.crane-r { fill: #b9801a; }
+.lattice { stroke: #b9801a; stroke-width: 1; }
+.steel { fill: #9aa3b0; }
+.steel-l { fill: #7c8695; }
+.steel-r { fill: #667080; }
+.slab { fill: var(--ill-top); }
+.slab-l { fill: var(--ill-left); }
+.slab-r { fill: var(--ill-right); }
+.sc { stroke: #8a929e; stroke-width: 1.4; opacity: 0.85; }
+.cable { stroke: #3c4450; stroke-width: 1.4; }
+.cone { fill: #f07a2f; }
+.cone-band { stroke: #fff; stroke-width: 2; }
+.wf { fill: none; }

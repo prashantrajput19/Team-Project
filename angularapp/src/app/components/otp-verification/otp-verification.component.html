@@ -1,0 +1,28 @@
+<span class="otp-verified" *ngIf="isVerified">&#10003; Verified</span>
+
+<button *ngIf="!isVerified && !isSent" class="btn-secondary otp-send" type="button"
+    [disabled]="!emailValid || isSending" (click)="sendOtp()">
+    {{ isSending ? "Sending..." : "Send OTP" }}
+</button>
+
+<div class="otp-panel" *ngIf="isSent && !isVerified">
+    <p class="otp-hint">Enter the 6-digit code sent to your email.</p>
+
+    <div class="otp-row">
+        <input class="input otp-input" type="text" inputmode="numeric" maxlength="6" autocomplete="one-time-code"
+            placeholder="123456" [(ngModel)]="code" [ngModelOptions]="{ standalone: true }" aria-label="Email OTP" />
+
+        <button class="btn" type="button" [disabled]="code.length !== 6 || isVerifying" (click)="verifyOtp()">
+            {{ isVerifying ? "Verifying..." : "Verify" }}
+        </button>
+    </div>
+
+    <p class="otp-hint">
+        <span *ngIf="secondsLeft > 0">Resend OTP in {{ secondsLeft }}s</span>
+        <button *ngIf="secondsLeft <= 0" class="otp-link" type="button" [disabled]="isSending" (click)="sendOtp()">
+            {{ isSending ? "Sending..." : "Resend OTP" }}
+        </button>
+    </p>
+</div>
+
+<div class="field-error otp-error" *ngIf="errorMessage">{{ errorMessage }}</div>

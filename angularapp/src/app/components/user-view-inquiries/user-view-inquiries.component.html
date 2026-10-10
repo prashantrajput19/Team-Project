@@ -1,0 +1,215 @@
+<div class="page">
+    <div class="page-inner">
+        <div class="page-head">
+            <div>
+                <h2 class="page-title">My inquiries</h2>
+                <p class="subtitle">Every inquiry you've sent, and where it stands</p>
+            </div>
+
+            <span class="count" *ngIf="inquiries.length > 0">
+                {{ filteredInquiries.length }} of {{ inquiries.length }}
+                {{ inquiries.length === 1 ? "inquiry" : "inquiries" }}
+            </span>
+        </div>
+
+        <div class="form-error" *ngIf="errorMessage">
+            {{ errorMessage }}
+        </div>
+
+        <div class="loading-row" *ngIf="isLoading">
+            <span class="spinner"></span> Loading your inquiries...
+        </div>
+
+        <div class="empty" *ngIf="!isLoading && inquiries.length === 0 && !errorMessage">
+            No inquiries found.
+
+            <div class="empty-actions">
+                <a class="btn" routerLink="/user/architects">Find an architect</a>
+            </div>
+        </div>
+
+        <div class="toolbar" *ngIf="inquiries.length > 0">
+            <div class="search">
+                <svg class="icon" viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="7" />
+                    <path d="M21 21l-4.3-4.3" />
+                </svg>
+
+                <input class="input" type="text" placeholder="Search by architect or message" [value]="search"
+                    (input)="search = $any($event.target).value" />
+            </div>
+
+            <select class="select" [value]="statusFilter" (change)="statusFilter = $any($event.target).value">
+                <option value="">All statuses</option>
+                <option *ngFor="let status of statusOptions" [value]="status">{{ status }}</option>
+            </select>
+
+            <button class="btn-secondary" type="button" *ngIf="hasFilters" (click)="clearFilters()">
+                Clear
+            </button>
+        </div>
+
+        <div class="panel" *ngIf="inquiries.length > 0">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Architect</th>
+                        <th>Message</th>
+                        <th>Priority</th>
+                        <th>Phone</th>
+                        <th>Status</th>
+                        <th class="right">Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr *ngIf="filteredInquiries.length === 0">
+                        <td colspan="6" class="no-results">No inquiries match your search</td>
+                    </tr>
+
+                    <ng-container *ngFor="let inquiry of filteredInquiries">
+                    <tr class="inquiry-row">
+                        <td class="nowrap">
+                            <div class="named">
+                                <span class="avatar">
+                                    {{ (inquiry.architect?.name || "?").charAt(0) | uppercase }}
+                                </span>
+                                <span class="named-text">{{ inquiry.architect?.name }}</span>
+                            </div>
+                        </td>
+
+                        <td class="cell-message">{{ inquiry.message }}</td>
+
+                        <td class="nowrap">
+                            <span class="status" [ngClass]="badgeClass(inquiry.priority)">
+                                {{ inquiry.priority }}
+                            </span>
+                        </td>
+
+                        <td class="nowrap cell-muted">{{ inquiry.contactDetails || "—" }}</td>
+
+                        <td class="nowrap">
+                            <span class="status" [ngClass]="badgeClass(inquiry.status)">
+                                {{ inquiry.status || "Pending" }}
+                            </span>
+                        </td>
+
+                        <td class="right nowrap">
+                            <div class="actions">
+                                <button class="btn-danger" type="button" (click)="deleteInquiry(inquiry)">
+                                    Withdraw
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr class="detail-row">
+                        <td colspan="6">
+                            <div class="hold-notice"
+                                *ngIf="inquiry.architect?.status === 'Inactive' && inquiry.status !== 'Closed'">
+                                <svg class="icon" viewBox="0 0 24 24">
+                                    <path d="M12 9v4M12 17h.01" />
+                                    <path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z" />
+                                </svg>
+                                <span>
+                                    <strong>{{ inquiry.architect?.name }} is temporarily unavailable.</strong>
+                                    They are away due to an emergency, so this inquiry is on hold. You'll see an
+                                    update here as soon as they are back, and our team can still answer your follow-ups.
+                                </span>
+                            </div>
+
+                            <div class="thread" *ngIf="inquiry.subInquiries?.length">
+                                <div class="sub-item" *ngFor="let sub of inquiry.subInquiries"
+                                    [class.from-admin]="sub.sender === 'Admin'">
+                                    <span class="sub-label">{{ sub.sender === "Admin" ? "Admin reply" : "You" }}</span>
+                                    <p>{{ sub.message }}</p>
+                                    <time>{{ sub.createdAt | date: "d MMM, h:mm a" }}</time>
+                                </div>
+                            </div>
+
+                            <div class="sub-form" *ngIf="inquiry.status !== 'Closed'">
+                                <input class="input" type="text" placeholder="Ask a follow-up question..."
+                                    [value]="drafts[inquiry.inquiryId!] || ''"
+                                    (input)="drafts[inquiry.inquiryId!] = $any($event.target).value"
+                                    (keydown.enter)="sendSubInquiry(inquiry)" />
+                                <button class="btn-secondary" type="button"
+                                    [disabled]="!drafts[inquiry.inquiryId!]?.trim()"
+                                    (click)="sendSubInquiry(inquiry)">
+                                    Send
+                                </button>
+                            </div>
+
+                            <div class="closed-cta" *ngIf="inquiry.status === 'Closed'">
+                                <ng-container *ngIf="ratingFor(inquiry) as stars; else askFeedback">
+                                    <span class="rate-label">You rated {{ inquiry.architect?.name }}</span>
+                                    <span class="stars-static">
+                                        <span *ngFor="let s of [1, 2, 3, 4, 5]" [class.on]="s <= stars">&#9733;</span>
+                                    </span>
+                                </ng-container>
+
+                                <ng-template #askFeedback>
+                                    <span class="rate-label">This inquiry is closed. How was {{ inquiry.architect?.name }}?</span>
+                                    <button class="btn btn-accent" type="button" (click)="giveFeedback(inquiry)">
+                                        &#9733; Give feedback
+                                    </button>
+                                </ng-template>
+                            </div>
+                        </td>
+                    </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal" *ngIf="showDeleteModal" role="dialog" aria-modal="true" aria-labelledby="deleteTitle" tabindex="0"
+    (keydown)="handleModalKeydown($event)">
+    <div class="modal-card">
+        <div class="modal-icon error">
+            <svg class="icon" viewBox="0 0 24 24">
+                <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6" />
+            </svg>
+        </div>
+
+        <h3 id="deleteTitle">Withdraw Inquiry?</h3>
+
+        <p>
+            Are you sure you want to withdraw your inquiry to
+            <strong>{{ inquiryToDelete?.architect?.name }}</strong>? This cannot be undone.
+        </p>
+
+        <div class="modal-actions">
+            <button class="btn-secondary" type="button" [disabled]="isDeleting" (click)="closeDeleteModal()">
+                Cancel
+            </button>
+
+            <button class="btn-danger" type="button" [disabled]="isDeleting" (click)="confirmDelete()">
+                <span class="spinner" *ngIf="isDeleting"></span>
+                {{ isDeleting ? "Withdrawing..." : "Withdraw" }}
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="modal" *ngIf="alert.show" role="alertdialog" aria-modal="true" aria-labelledby="alertTitle" tabindex="0"
+    (keydown)="handleModalKeydown($event)">
+    <div class="modal-card">
+        <div class="modal-icon" [class.success]="alert.type === 'success'" [class.error]="alert.type === 'error'">
+            <svg *ngIf="alert.type === 'success'" class="icon" viewBox="0 0 24 24">
+                <path d="M20 6L9 17l-5-5" />
+            </svg>
+
+            <svg *ngIf="alert.type === 'error'" class="icon" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 8v4M12 16h.01" />
+            </svg>
+        </div>
+
+        <h3 id="alertTitle">{{ alert.title }}</h3>
+
+        <p>{{ alert.message }}</p>
+
+        <button class="btn btn-block" type="button" (click)="closeAlert()">OK</button>
+    </div>
+</div>

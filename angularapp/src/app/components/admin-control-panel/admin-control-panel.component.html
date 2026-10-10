@@ -1,0 +1,182 @@
+<div class="page">
+    <div class="page-inner">
+        <div class="page-head">
+            <div>
+                <h2 class="page-title">Control Panel</h2>
+                <p class="subtitle">
+                    {{ username ? "Welcome back, " + username + "." : "" }}
+                    Here's where ArchitectPoint stands right now.
+                </p>
+            </div>
+        </div>
+
+        <div class="stats">
+            <div class="stat">
+                <span class="stat-label">Architects</span>
+                <span class="stat-value">{{ architects.length }}</span>
+                <span class="stat-note">{{ activeArchitects }} active</span>
+            </div>
+
+            <div class="stat">
+                <span class="stat-label">Inquiries</span>
+                <span class="stat-value">{{ inquiries.length }}</span>
+                <span class="stat-note">{{ pendingInquiries }} awaiting a reply</span>
+            </div>
+
+            <div class="stat">
+                <span class="stat-label">Feedback</span>
+                <span class="stat-value">{{ feedbacks.length }}</span>
+                <span class="stat-note">from across the platform</span>
+            </div>
+
+            <div class="stat">
+                <span class="stat-label">Average rating</span>
+                <span class="stat-value">{{ averageRating }}</span>
+                <span class="stat-note">across all listings</span>
+            </div>
+        </div>
+
+        <div class="section-head">
+            <h3 class="section-title">Analytics</h3>
+            <span class="sample-note">Sample data for illustration</span>
+        </div>
+
+        <div class="charts">
+            <section class="chart-card wide">
+                <h3>Monthly inquiries</h3>
+                <p>New requests received over the last 12 months</p>
+
+                <svg class="line-chart" viewBox="0 0 600 220" role="img" aria-label="Monthly inquiries trend">
+                    <defs>
+                        <linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0" stop-color="#f2b544" stop-opacity="0.35" />
+                            <stop offset="1" stop-color="#f2b544" stop-opacity="0" />
+                        </linearGradient>
+                    </defs>
+                    <line *ngFor="let y of [30, 70, 110, 150, 190]" class="grid-line" x1="30" x2="570" [attr.y1]="y" [attr.y2]="y" />
+                    <path [attr.d]="areaPath" fill="url(#areaFill)" />
+                    <polyline class="line" [attr.points]="linePath" />
+                    <g *ngFor="let point of linePoints; let i = index">
+                        <circle class="dot" [attr.cx]="point.x" [attr.cy]="point.y" r="4">
+                            <title>{{ months[i] }}: {{ point.value }} inquiries</title>
+                        </circle>
+                        <text class="axis" [attr.x]="point.x" y="212">{{ months[i] }}</text>
+                    </g>
+                </svg>
+            </section>
+
+            <section class="chart-card">
+                <h3>Client satisfaction</h3>
+                <p>Share of clients who would recommend their architect</p>
+
+                <svg class="gauge" viewBox="0 0 200 132" role="img" [attr.aria-label]="satisfaction + '% satisfied'">
+                    <path class="gauge-track" d="M20 100 A80 80 0 0 1 180 100" pathLength="100" />
+                    <path class="gauge-fill" d="M20 100 A80 80 0 0 1 180 100" pathLength="100"
+                        [attr.stroke-dasharray]="satisfaction + ' 100'" />
+                    <text class="gauge-value" x="100" y="92">{{ satisfaction }}%</text>
+                    <text class="axis" x="20" y="128">0</text>
+                    <text class="axis" x="180" y="128">100</text>
+                </svg>
+
+                <div class="gauge-note"><span class="up">&#9650; 4%</span> compared with last quarter</div>
+            </section>
+
+            <section class="chart-card">
+                <h3>Inquiries by status</h3>
+                <p>Where requests currently stand</p>
+
+                <div class="donut-wrap">
+                    <svg class="donut" viewBox="0 0 180 180" role="img" aria-label="Inquiries by status">
+                        <circle cx="90" cy="90" r="70" class="track" />
+                        <circle *ngFor="let seg of donutSegments" cx="90" cy="90" r="70" class="slice"
+                            [attr.stroke]="seg.slice.color" [attr.stroke-dasharray]="seg.dash"
+                            [attr.stroke-dashoffset]="seg.offset">
+                            <title>{{ seg.slice.label }}: {{ seg.slice.value }}</title>
+                        </circle>
+                    </svg>
+                    <div class="donut-center">
+                        <strong>{{ inquiryTotal }}</strong>
+                        <span>total</span>
+                    </div>
+                </div>
+
+                <ul class="legend">
+                    <li *ngFor="let slice of inquiryStatus">
+                        <span class="swatch" [style.background]="slice.color"></span>
+                        {{ slice.label }}<b>{{ slice.value }}</b>
+                    </li>
+                </ul>
+            </section>
+
+            <section class="chart-card">
+                <h3>Architects by expertise</h3>
+                <p>Share of listings in each specialisation (%)</p>
+
+                <svg class="pie" viewBox="0 0 200 200" role="img" aria-label="Architects by expertise">
+                    <path *ngFor="let arc of pieSlices" class="pie-slice" [attr.d]="arc.path" [attr.fill]="arc.slice.color">
+                        <title>{{ arc.slice.label }}: {{ arc.slice.value }}%</title>
+                    </path>
+                </svg>
+
+                <ul class="legend">
+                    <li *ngFor="let slice of expertiseShare">
+                        <span class="swatch" [style.background]="slice.color"></span>
+                        {{ slice.label }}<b>{{ slice.value }}%</b>
+                    </li>
+                </ul>
+            </section>
+
+            <app-bar-chart heading="Feedback ratings" subtitle="How many reviews gave each star rating"
+                [bars]="ratingBars" unit="review" units="reviews" orientation="columns"></app-bar-chart>
+        </div>
+
+        <h3 class="section-title">Quick actions</h3>
+
+        <div class="tiles">
+            <a class="tile" routerLink="/admin/architects/add">
+                <span class="tile-icon">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 8v8M8 12h8" />
+                    </svg>
+                </span>
+
+                <span class="tile-title">Add Architect</span>
+                <span class="tile-note">List a new architect on the platform</span>
+            </a>
+
+            <a class="tile" routerLink="/admin/architects">
+                <span class="tile-icon">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
+                    </svg>
+                </span>
+
+                <span class="tile-title">Manage Architects</span>
+                <span class="tile-note">Update ratings, status and portfolios</span>
+            </a>
+
+            <a class="tile" routerLink="/admin/inquiries">
+                <span class="tile-icon">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                    </svg>
+                </span>
+
+                <span class="tile-title">Review Inquiries</span>
+                <span class="tile-note">Move requests through to resolved</span>
+            </a>
+
+            <a class="tile" routerLink="/admin/feedback">
+                <span class="tile-icon">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z" />
+                    </svg>
+                </span>
+
+                <span class="tile-title">Read Feedback</span>
+                <span class="tile-note">See what users think of each architect</span>
+            </a>
+        </div>
+    </div>
+</div>

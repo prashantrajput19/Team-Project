@@ -1,0 +1,100 @@
+<div class="page">
+    <div class="page-inner">
+        <div class="page-head">
+            <div>
+                <h2 class="page-title">Feedback</h2>
+                <p class="subtitle">What users are saying about the architects on the platform</p>
+            </div>
+
+            <span class="count" *ngIf="feedbacks.length > 0">
+                {{ filteredFeedbacks.length }} of {{ feedbacks.length }}
+                {{ feedbacks.length === 1 ? "entry" : "entries" }}
+            </span>
+        </div>
+
+        <div class="form-error" *ngIf="errorMessage">
+            {{ errorMessage }}
+        </div>
+
+        <div class="loading-row" *ngIf="isLoading">
+            <span class="spinner"></span> Loading feedback...
+        </div>
+
+        <div class="empty" *ngIf="!isLoading && feedbacks.length === 0 && !errorMessage">
+            No data available
+        </div>
+
+        <div class="toolbar" *ngIf="feedbacks.length > 0">
+            <div class="search">
+                <svg class="icon" viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="7" />
+                    <path d="M21 21l-4.3-4.3" />
+                </svg>
+
+                <input class="input" type="text" placeholder="Search feedback or architect" [value]="search"
+                    (input)="search = $any($event.target).value" />
+            </div>
+
+            <select class="select" [value]="categoryFilter" (change)="categoryFilter = $any($event.target).value">
+                <option value="">All categories</option>
+                <option *ngFor="let category of categoryOptions" [value]="category">{{ category }}</option>
+            </select>
+
+            <select class="select" [value]="sortBy" (change)="sortBy = $any($event.target).value">
+                <option value="">Sort: default</option>
+                <option value="high">Rating: high to low</option>
+                <option value="low">Rating: low to high</option>
+            </select>
+
+            <button class="btn-secondary" type="button" *ngIf="hasFilters" (click)="clearFilters()">
+                Clear
+            </button>
+        </div>
+
+        <div class="panel" *ngIf="feedbacks.length > 0">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Architect</th>
+                        <th>Feedback</th>
+                        <th>Category</th>
+                        <th>Rating</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr *ngIf="filteredFeedbacks.length === 0">
+                        <td colspan="6" class="no-results">No feedback matches your search</td>
+                    </tr>
+
+                    <tr *ngFor="let feedback of filteredFeedbacks">
+                        <td class="nowrap">
+                            <div class="named">
+                                <span class="avatar">{{ (userName(feedback) || "?").charAt(0) | uppercase }}</span>
+                                <span class="named-text">
+                                    {{ userName(feedback) || "User #" + feedback.user?.userId }}
+                                </span>
+                            </div>
+                        </td>
+
+                        <td class="nowrap cell-muted">{{ architectName(feedback) || "—" }}</td>
+
+                        <td class="cell-message">{{ feedback.feedbackText }}</td>
+
+                        <td class="nowrap"><span class="tag">{{ feedback.category }}</span></td>
+                        <td class="nowrap">
+                            <span class="stars-static" *ngIf="feedback.rating; else noStars">
+                                <span *ngFor="let s of [1, 2, 3, 4, 5]" [class.on]="s <= feedback.rating!">&#9733;</span>
+                            </span>
+                            <ng-template #noStars><span class="cell-muted">&mdash;</span></ng-template>
+                        </td>
+
+                        <td class="nowrap cell-muted">{{ feedback.date }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

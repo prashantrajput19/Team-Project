@@ -1,0 +1,77 @@
+<div class="page">
+    <div class="page-inner">
+        <button class="btn-secondary back" type="button" (click)="goBack()">&larr; Back</button>
+
+        <div class="loading-row" *ngIf="isLoading">
+            <span class="spinner"></span> Loading portfolio...
+        </div>
+
+        <div class="form-error" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+        <ng-container *ngIf="architect">
+            <header class="profile">
+                <app-architect-avatar [seed]="architect.architectId ?? 0" [name]="architect.name" [size]="88"></app-architect-avatar>
+
+                <div class="profile-text">
+                    <span class="kicker">Portfolio</span>
+                    <h1>{{ architect.name }}</h1>
+                    <div class="profile-meta">
+                        <span class="tag">{{ architect.expertise }}</span>
+                        <span>{{ architect.location }}</span>
+                        <span class="status" [class.active]="isActive" [class.inactive]="!isActive">
+                            {{ architect.status }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="profile-cta" *ngIf="isUser">
+                    <button class="btn btn-accent" type="button" *ngIf="isActive" (click)="sendInquiry()">
+                        Send Inquiry
+                    </button>
+                    <span class="cell-muted" *ngIf="!isActive">Not taking new inquiries right now</span>
+                </div>
+            </header>
+
+            <dl class="stats">
+                <div class="stat">
+                    <dt class="stat-label">Rating</dt>
+                    <dd class="stat-value" *ngIf="architect.rating"><span class="star">&#9733;</span> {{ architect.rating }}</dd>
+                    <dd class="stat-value" *ngIf="!architect.rating">New</dd>
+                </div>
+                <div class="stat">
+                    <dt class="stat-label">Years of practice</dt>
+                    <dd class="stat-value">{{ yearsOfPractice }}</dd>
+                </div>
+                <div class="stat">
+                    <dt class="stat-label">Projects completed</dt>
+                    <dd class="stat-value">{{ projectsCompleted }}+</dd>
+                </div>
+            </dl>
+
+            <section class="about">
+                <h2>About the studio</h2>
+                <p>
+                    {{ architect.name }} is a {{ architect.expertise | lowercase }} practice based in
+                    {{ architect.location }}. For {{ yearsOfPractice }} years the team has taken projects from first
+                    sketch to handover, covering site study, design development, approvals and on-site supervision.
+                    They work closely with clients on budget and timelines, and favour natural light, local materials
+                    and spaces that are easy to live in.
+                </p>
+            </section>
+
+            <section>
+                <h2>Selected projects</h2>
+
+                <div class="projects">
+                    <figure class="project" *ngFor="let project of projects">
+                        <app-design-art [kind]="project.kind"></app-design-art>
+                        <figcaption>
+                            <strong>{{ project.title }}</strong>
+                            <span>{{ architect.location }} · {{ project.year }} · {{ project.area }}</span>
+                        </figcaption>
+                    </figure>
+                </div>
+            </section>
+        </ng-container>
+    </div>
+</div>

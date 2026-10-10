@@ -1,0 +1,27 @@
+<svg viewBox="0 0 64 64" [attr.width]="size" [attr.height]="size" role="img" [attr.aria-label]="name + ' avatar'">
+    <rect width="64" height="64" rx="18" [attr.fill]="background" />
+
+    <path *ngIf="longHair" d="M19 24a13 13 0 0 1 26 0v18h-26z" [attr.fill]="hair" />
+
+    <path d="M10 64a22 18 0 0 1 44 0z" [attr.fill]="shirt" />
+    <rect x="28" y="36" width="8" height="8" rx="3" [attr.fill]="skin" />
+    <circle cx="32" cy="27" r="12" [attr.fill]="skin" />
+
+    <path *ngIf="!hardHat" d="M20 26a12 12 0 0 1 24 0c-4-5-12-7-24 0z" [attr.fill]="hair" />
+
+    <g *ngIf="hardHat">
+        <path d="M19 22a13 12 0 0 1 26 0z" fill="#f3efe6" />
+        <rect x="16" y="21" width="32" height="4" rx="2" fill="#cfc8b8" />
+        <rect x="30" y="11" width="4" height="10" rx="2" fill="#cfc8b8" />
+    </g>
+
+    <g *ngIf="glasses" fill="none" stroke="#1a1a1a" stroke-width="1.6">
+        <circle cx="27" cy="28" r="3.4" />
+        <circle cx="37" cy="28" r="3.4" />
+        <path d="M30.4 28h3.2" />
+    </g>
+
+    <circle *ngIf="!glasses" cx="27.5" cy="28" r="1.4" fill="#1a1a1a" />
+    <circle *ngIf="!glasses" cx="36.5" cy="28" r="1.4" fill="#1a1a1a" />
+    <path d="M28.5 33.5q3.5 2.5 7 0" fill="none" stroke="#1a1a1a" stroke-width="1.4" stroke-linecap="round" />
+</svg>

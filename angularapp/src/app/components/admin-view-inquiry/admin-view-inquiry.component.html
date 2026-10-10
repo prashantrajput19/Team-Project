@@ -1,0 +1,173 @@
+<div class="page">
+    <div class="page-inner">
+        <div class="page-head">
+            <div>
+                <h2 class="page-title">Inquiries</h2>
+                <p class="subtitle">Every inquiry users have sent to the listed architects</p>
+            </div>
+
+            <span class="count" *ngIf="inquiries.length > 0">
+                {{ filteredInquiries.length }} of {{ inquiries.length }}
+                {{ inquiries.length === 1 ? "inquiry" : "inquiries" }}
+            </span>
+        </div>
+
+        <div class="form-error" *ngIf="errorMessage">
+            {{ errorMessage }}
+        </div>
+
+        <div class="loading-row" *ngIf="isLoading">
+            <span class="spinner"></span> Loading inquiries...
+        </div>
+
+        <div class="empty" *ngIf="!isLoading && inquiries.length === 0 && !errorMessage">
+            No inquiries found.
+        </div>
+
+        <div class="toolbar" *ngIf="inquiries.length > 0">
+            <div class="search">
+                <svg class="icon" viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="7" />
+                    <path d="M21 21l-4.3-4.3" />
+                </svg>
+
+                <input class="input" type="text" placeholder="Search by user, architect or message"
+                    [value]="search" (input)="search = $any($event.target).value" />
+            </div>
+
+            <select class="select" [value]="statusFilter" (change)="statusFilter = $any($event.target).value">
+                <option value="">All statuses</option>
+                <option *ngFor="let status of statusOptions" [value]="status">{{ status }}</option>
+            </select>
+
+            <select class="select" [value]="priorityFilter" (change)="priorityFilter = $any($event.target).value">
+                <option value="">All priorities</option>
+                <option *ngFor="let priority of priorityOptions" [value]="priority">{{ priority }}</option>
+            </select>
+
+            <button class="btn-secondary" type="button" *ngIf="hasFilters" (click)="clearFilters()">
+                Clear
+            </button>
+        </div>
+
+        <div class="panel" *ngIf="inquiries.length > 0">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Architect</th>
+                        <th>Message</th>
+                        <th>Priority</th>
+                        <th>Phone</th>
+                        <th>Status</th>
+                        <th class="right">Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr *ngIf="filteredInquiries.length === 0">
+                        <td colspan="7" class="no-results">No inquiries match your search</td>
+                    </tr>
+
+                    <ng-container *ngFor="let inquiry of filteredInquiries">
+                    <tr [class.inquiry-row]="hasDetail(inquiry)">
+                        <td class="nowrap">
+                            <div class="named">
+                                <span class="avatar">
+                                    {{ (inquiry.user?.username || "?").charAt(0) | uppercase }}
+                                </span>
+
+                                <span class="named-text">
+                                    {{ inquiry.user?.username || "User #" + inquiry.user?.userId }}
+                                </span>
+                            </div>
+                        </td>
+
+                        <td class="nowrap cell-muted">
+                            {{ inquiry.architect?.name }}
+                            <div class="status inactive" *ngIf="inquiry.architect?.status === 'Inactive'">Architect inactive</div>
+                        </td>
+
+                        <td class="cell-message">{{ inquiry.message }}</td>
+
+                        <td class="nowrap">
+                            <span class="status" [ngClass]="badgeClass(inquiry.priority)">
+                                {{ inquiry.priority }}
+                            </span>
+                        </td>
+
+                        <td class="cell-muted">{{ inquiry.contactDetails || "—" }}</td>
+
+                        <td class="nowrap">
+                            <span class="status" [ngClass]="badgeClass(inquiry.status)">
+                                {{ inquiry.status || "Pending" }}
+                            </span>
+                        </td>
+
+                        <td class="right nowrap">
+                            <div class="actions">
+                                <button class="btn" type="button" (click)="openStatusModal(inquiry)">
+                                    Update Status
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr class="detail-row" *ngIf="hasDetail(inquiry)">
+                        <td colspan="7">
+                            <div class="thread" *ngIf="inquiry.subInquiries?.length">
+                                <div class="sub-item" *ngFor="let sub of inquiry.subInquiries"
+                                    [class.from-admin]="sub.sender === 'Admin'">
+                                    <span class="sub-label">{{ sub.sender === "Admin" ? "You (Admin)" : inquiry.user?.username }}</span>
+                                    <p>{{ sub.message }}</p>
+                                    <time>{{ sub.createdAt | date: "d MMM, h:mm a" }}</time>
+                                </div>
+                            </div>
+
+                            <div class="sub-form" *ngIf="inquiry.status !== 'Closed'">
+                                <input class="input" type="text" placeholder="Reply to the user..."
+                                    [value]="drafts[inquiry.inquiryId!] || ''"
+                                    (input)="drafts[inquiry.inquiryId!] = $any($event.target).value"
+                                    (keydown.enter)="sendReply(inquiry)" />
+                                <button class="btn-secondary" type="button"
+                                    [disabled]="!drafts[inquiry.inquiryId!]?.trim()" (click)="sendReply(inquiry)">
+                                    Reply
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal" *ngIf="showStatusModal" role="dialog" aria-modal="true" aria-labelledby="statusTitle" tabindex="0"
+    (keydown)="handleModalKeydown($event)">
+    <div class="modal-card">
+        <h3 id="statusTitle">Update Inquiry Status</h3>
+
+        <p>
+            Inquiry from <strong>{{ inquiryToUpdate?.user?.username }}</strong>
+            to <strong>{{ inquiryToUpdate?.architect?.name }}</strong>
+        </p>
+
+        <select class="select" [value]="newStatus" [disabled]="isUpdating"
+            (change)="newStatus = $any($event.target).value">
+            <option *ngFor="let status of statusOptions" [value]="status">{{ status }}</option>
+        </select>
+
+        <div class="modal-actions">
+            <button class="btn-secondary" type="button" [disabled]="isUpdating" (click)="closeStatusModal()">
+                Cancel
+            </button>
+
+            <button class="btn" type="button" [disabled]="isUpdating || newStatus === inquiryToUpdate?.status"
+                (click)="confirmStatusUpdate()">
+                <span class="spinner" *ngIf="isUpdating"></span>
+                {{ isUpdating ? "Updating..." : "Update" }}
+            </button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,172 @@
+<section class="hero">
+    <div class="hero-bg" aria-hidden="true"><app-hero-illustration></app-hero-illustration></div>
+
+    <div class="hero-content">
+        <span class="eyebrow" *ngIf="username">Welcome back, {{ username }}</span>
+
+        <h1>
+            The right architect,<br class="wide-only" />
+            for the thing you're building
+        </h1>
+
+        <p>
+            Browse vetted architects by expertise, location and rating. Send an
+            inquiry in a couple of clicks and track every reply in one place.
+        </p>
+
+        <div class="hero-actions">
+            <a [routerLink]="isAdmin ? '/admin/architects' : '/user/architects'" class="hero-btn">
+                <span class="hero-btn-icon">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M3 21h18" />
+                        <path d="M5 21V8l7-5 7 5v13" />
+                        <path d="M10 21v-6h4v6" />
+                    </svg>
+                </span>
+                {{ isAdmin ? "Manage architects" : "Browse architects" }}
+            </a>
+
+            <a [routerLink]="isAdmin ? '/admin/inquiries' : '/user/architects'" class="hero-link">
+                {{ isAdmin ? "Review inquiries" : "Send an inquiry" }}
+                <span class="arrow">&rarr;</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="band">
+    <div class="wrap">
+        <div class="section-head">
+            <span class="kicker">How it works</span>
+            <h2>From first sketch to final review</h2>
+        </div>
+
+        <ol class="steps">
+            <li class="step" *ngFor="let step of steps; let i = index">
+                <span class="step-num">0{{ i + 1 }}</span>
+                <h3>{{ step.title }}</h3>
+                <p>{{ step.text }}</p>
+            </li>
+        </ol>
+    </div>
+</section>
+
+<section class="band" *ngIf="topArchitects.length">
+    <div class="wrap">
+        <div class="section-head split">
+            <div>
+                <span class="kicker">Top rated</span>
+                <h2>Architects people recommend</h2>
+                <p class="section-note">Ranked by rating</p>
+            </div>
+            <dl class="mini-stats">
+                <div><dt>Architects</dt><dd>{{ architectCount }}</dd></div>
+                <div><dt>Cities</dt><dd>{{ cityCount }}</dd></div>
+                <div><dt>Avg rating</dt><dd><span class="star">&#9733;</span> {{ averageRating | number: "1.1-1" }}</dd></div>
+            </dl>
+        </div>
+
+        <div class="top-grid">
+            <a class="top-card" *ngFor="let top of topArchitects; let i = index"
+                [routerLink]="['/portfolio', top.architectId]">
+                <span class="top-rank">#{{ i + 1 }}</span>
+                <app-architect-avatar [seed]="top.architectId ?? 0" [name]="top.name"
+                    [size]="56"></app-architect-avatar>
+                <span class="top-text">
+                    <strong>{{ top.name }}</strong>
+                    <small>{{ top.expertise }} · {{ top.location }}</small>
+                </span>
+                <span class="rating" *ngIf="top.rating"><span class="star">&#9733;</span>{{ top.rating | number: "1.1-1" }}</span>
+                <span class="rating" *ngIf="!top.rating">New</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="band">
+    <div class="wrap">
+        <div class="section-head split">
+            <div>
+                <span class="kicker">Explore by expertise</span>
+                <h2>Every kind of building, one place</h2>
+            </div>
+            <a class="ext-link" [routerLink]="architectsRoute">See all architects &rarr;</a>
+        </div>
+
+        <div class="expertise-grid">
+            <a class="expertise-card" *ngFor="let item of expertise" [routerLink]="architectsRoute">
+                <app-design-art [kind]="item.kind"></app-design-art>
+                <div class="expertise-text">
+                    <h3>{{ item.name }}</h3>
+                    <p>{{ item.text }}</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="band">
+    <div class="wrap">
+        <div class="section-head">
+            <span class="kicker">Architecture in the news</span>
+            <h2>Milestones from around the world</h2>
+        </div>
+
+        <div class="news-grid">
+            <article class="news-card" *ngFor="let item of news; let i = index"
+                [style.animation-delay]="i * -0.9 + 's'">
+                <div class="news-date">
+                    <span class="news-year">{{ item.year }}</span>
+                    <span class="news-tag">{{ item.tag }}</span>
+                </div>
+                <div class="news-body">
+                    <h3>{{ item.title }}</h3>
+                    <p>{{ item.text }}</p>
+                    <span class="news-place">{{ item.place }}</span>
+                </div>
+            </article>
+        </div>
+    </div>
+</section>
+
+<section class="band">
+    <div class="wrap">
+        <div class="section-head">
+            <span class="kicker">Loved by homeowners</span>
+            <h2>What our clients say</h2>
+        </div>
+
+        <div class="testimonials">
+            <figure class="testimonial" *ngFor="let t of testimonials; let i = index"
+                [style.animation-delay]="i * -1.1 + 's'">
+                <div class="stars-static">
+                    <span *ngFor="let s of [1, 2, 3, 4, 5]" [class.on]="s <= t.stars">&#9733;</span>
+                </div>
+
+                <blockquote>{{ t.quote }}</blockquote>
+
+                <figcaption>
+                    <span class="avatar">{{ t.name.charAt(0) }}</span>
+                    <span>
+                        <strong>{{ t.name }}</strong>
+                        <small>{{ t.city }} · {{ t.project }}</small>
+                    </span>
+                </figcaption>
+            </figure>
+        </div>
+    </div>
+</section>
+
+<section class="band">
+    <div class="wrap">
+        <div class="cta">
+            <div>
+                <h2>Ready to start building?</h2>
+                <p>Pick an architect, send your brief and track every reply in one place.</p>
+            </div>
+            <a class="btn btn-accent" [routerLink]="architectsRoute">
+                {{ isAdmin ? "Manage architects" : "Find your architect" }}
+            </a>
+        </div>
+    </div>
+</section>

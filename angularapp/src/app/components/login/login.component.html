@@ -1,0 +1,80 @@
+<button class="theme-float" type="button" (click)="toggleTheme()" title="Change theme">
+    <svg *ngIf="isLight" class="icon" viewBox="0 0 24 24">
+        <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z" />
+    </svg>
+
+    <svg *ngIf="!isLight" class="icon" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="4" />
+        <path
+            d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+    </svg>
+</button>
+
+<div class="auth-page">
+    <div class="auth-grid">
+        <div class="auth-form">
+            <span class="brand">
+                <svg class="icon" viewBox="0 0 24 24">
+                    <path d="M3 21h18" />
+                    <path d="M5 21V8l7-5 7 5v13" />
+                    <path d="M10 21v-6h4v6" />
+                </svg>
+                ArchitectPoint
+            </span>
+          
+
+            <h2>Welcome back</h2>
+
+            <p class="lead">Sign in to connect with the architects you need.</p>
+
+            <form #loginForm="ngForm" (ngSubmit)="login()" novalidate>
+                <div class="field">
+                    <label for="email">Email</label>
+
+                    <input class="input" type="text" id="email" name="email" [(ngModel)]="loginData.email"
+                        #email="ngModel" required [pattern]="emailPattern" placeholder="you@example.com" />
+
+                    <div class="field-error" *ngIf="email.errors?.['required'] && email.touched">
+                        Email is required
+                    </div>
+
+                    <div class="field-error" *ngIf="email.errors?.['pattern'] && email.touched">
+                        Please enter a valid email
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="password">Password</label>
+
+                    <input class="input" type="password" id="password" name="password"
+                        [(ngModel)]="loginData.password" #password="ngModel" required minlength="6"
+                        placeholder="••••••••" />
+
+                    <div class="field-error" *ngIf="password.errors?.['required'] && password.touched">
+                        Password is required
+                    </div>
+
+                    <div class="field-error" *ngIf="password.errors?.['minlength'] && password.touched">
+                        Password must be at least 6 characters
+                    </div>
+                </div>
+
+                <div class="form-error" *ngIf="errorMessage">
+                    {{ errorMessage }}
+                </div>
+
+                <button class="btn btn-block" type="submit" [disabled]="loginForm.invalid || isLoading">
+                    <span class="spinner" *ngIf="isLoading"></span>
+                    {{ isLoading ? "Logging in..." : "Login" }}
+                </button>
+
+                <p class="form-footer">
+                    Don't have an account?
+                    <a routerLink="/signup">Sign up</a>
+                </p>
+            </form>
+        </div>
+
+        <aside class="auth-visual" aria-hidden="true"><app-login-illustration></app-login-illustration></aside>
+    </div>
+</div>

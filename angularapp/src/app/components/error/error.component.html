@@ -1,0 +1,77 @@
+<div class="error-page">
+    <div class="error-card" *ngIf="isForbidden">
+        <span class="badge">Access denied</span>
+
+        <h1>403</h1>
+
+        <h2>This area is for {{ neededRole }}s only</h2>
+
+        <p>
+            You are signed in as <strong>{{ currentRole }}</strong>, so this page isn't available to you.
+            Head back to your own dashboard, or sign in with the right account.
+        </p>
+
+        <div class="error-actions">
+            <a class="btn" [routerLink]="homeLink">Go to my home</a>
+            <button class="btn-secondary" type="button" (click)="switchAccount()">Sign in with another account</button>
+        </div>
+    </div>
+
+    <div class="error-card wide" *ngIf="!isForbidden">
+        <svg class="collapse-art" viewBox="0 0 360 230" role="img" aria-label="A house cracking in half and collapsing">
+            <ellipse cx="180" cy="200" rx="150" ry="10" class="shadow" />
+            <line x1="20" y1="196" x2="340" y2="196" class="ground" />
+
+            <g>
+                <polygon points="90,96 180,40 180,96" class="roof" />
+                <rect x="100" y="96" width="80" height="100" class="wall" />
+                <rect x="116" y="116" width="26" height="26" rx="2" class="window" />
+                <path d="M129 116v26M116 129h26" class="frame" />
+                <rect x="150" y="146" width="22" height="50" rx="2" class="door" />
+            </g>
+
+            <path d="M180 40 172 70 186 92 174 120 188 148 176 172 184 196" class="crack" />
+
+            <g class="falling">
+                <polygon points="184,44 274,98 184,98" class="roof" />
+                <rect x="184" y="98" width="80" height="98" class="wall" />
+                <rect x="214" y="118" width="26" height="26" rx="2" class="window broken" />
+                <path d="M216 120l22 22M238 120l-10 10" class="frame" />
+            </g>
+
+            <g class="debris">
+                <rect x="268" y="184" width="16" height="9" rx="1" transform="rotate(-12 276 188)" />
+                <rect x="290" y="186" width="14" height="8" rx="1" transform="rotate(18 297 190)" />
+                <rect x="250" y="189" width="12" height="7" rx="1" />
+            </g>
+            <circle cx="300" cy="170" r="10" class="dust" />
+            <circle cx="318" cy="180" r="7" class="dust" />
+            <circle cx="66" cy="182" r="8" class="dust" />
+
+            <g class="cone">
+                <polygon points="52,196 62,160 72,196" />
+                <rect x="47" y="193" width="30" height="5" rx="2" />
+                <path d="M56 182h12M59 171h6" class="cone-band" />
+            </g>
+
+            <g transform="rotate(-4 180 214)">
+                <rect x="44" y="206" width="272" height="16" class="tape" />
+                <text x="180" y="218" class="tape-text">UNDER CONSTRUCTION · 404 · KEEP OUT</text>
+            </g>
+        </svg>
+
+        <span class="badge">Error 404</span>
+
+        <h2>Oops, this page collapsed</h2>
+
+        <p>
+            The page you're looking for doesn't exist, was moved, or never made it past the drawing board.
+            Let's get you back on solid ground.
+        </p>
+
+        <div class="error-actions">
+            <a class="btn" [routerLink]="homeLink">Go Home</a>
+            <button class="btn-secondary" type="button" (click)="goBack()">Go Back</button>
+        </div>
+    </div>
+</div>

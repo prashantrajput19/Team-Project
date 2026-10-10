@@ -1,0 +1,8 @@
+<app-adminnav *ngIf="isLoggedIn && isAdmin"></app-adminnav>
+<app-usernav *ngIf="isLoggedIn && !isAdmin"></app-usernav>
+
+<main>
+    <router-outlet></router-outlet>
+</main>
+
+<app-site-footer *ngIf="isLoggedIn"></app-site-footer>

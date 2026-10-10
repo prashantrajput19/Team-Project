@@ -1,0 +1,111 @@
+<div class="form-page">
+    <div class="form-shell">
+        <h2>Add Architect</h2>
+
+        <p class="lead">List a new architect so users can find and contact them.</p>
+
+        <div class="form-card">
+            <form #architectForm="ngForm" (ngSubmit)="save()" novalidate>
+                <div class="field">
+                    <label for="name">Name</label>
+
+                    <input class="input" type="text" id="name" name="name" [(ngModel)]="architect.name"
+                        #name="ngModel" required placeholder="Jane Mehta" />
+
+                    <div class="field-error" *ngIf="name.invalid && name.touched">
+                        Name is required
+                    </div>
+                </div>
+
+                <div class="field-row">
+                    <div class="field">
+                        <label for="expertise">Expertise</label>
+
+                        <select class="select" id="expertise" name="expertise" [(ngModel)]="architect.expertise"
+                            #expertise="ngModel" required>
+                            <option value="">Select expertise</option>
+                            <option *ngFor="let option of expertiseOptions" [value]="option">{{ option }}</option>
+                        </select>
+
+                        <div class="field-error" *ngIf="expertise.invalid && expertise.touched">
+                            Expertise is required
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label for="location">Location</label>
+
+                        <input class="input" type="text" id="location" name="location"
+                            [(ngModel)]="architect.location" #location="ngModel" required placeholder="Pune" />
+
+                        <div class="field-error" *ngIf="location.invalid && location.touched">
+                            Location is required
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field-row">
+                    <div class="field">
+                        <label for="status">Status</label>
+
+                        <select class="select" id="status" name="status" [(ngModel)]="architect.status"
+                            #status="ngModel" required>
+                            <option *ngFor="let option of statusOptions" [value]="option">{{ option }}</option>
+                        </select>
+
+                        <div class="field-error" *ngIf="status.invalid && status.touched">
+                            Status is required
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="portfolioLink">Portfolio Link</label>
+
+                    <input class="input" type="text" id="portfolioLink" name="portfolioLink"
+                        [(ngModel)]="architect.portfolioLink" #portfolio="ngModel" required [pattern]="urlPattern"
+                        placeholder="https://portfolio.example.com" />
+
+                    <div class="field-error" *ngIf="portfolio.errors?.['required'] && portfolio.touched">
+                        Portfolio link is required
+                    </div>
+
+                    <div class="field-error" *ngIf="portfolio.errors?.['pattern'] && portfolio.touched">
+                        Please enter a valid URL starting with http:// or https://
+                    </div>
+                </div>
+
+                <div class="form-buttons">
+                    <button class="btn-secondary" type="button" (click)="cancel()">Cancel</button>
+
+                    <button class="btn" type="submit" [disabled]="architectForm.invalid || isSaving">
+                        <span class="spinner" *ngIf="isSaving"></span>
+                        {{ isSaving ? "Saving..." : "Add Architect" }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal" *ngIf="alert.show" role="alertdialog" aria-modal="true" aria-labelledby="alertTitle" tabindex="0"
+    (keydown)="handleModalKeydown($event)">
+    <div class="modal-card">
+        <div class="modal-icon" [class.success]="alert.type === 'success'" [class.error]="alert.type === 'error'">
+            <svg *ngIf="alert.type === 'success'" class="icon" viewBox="0 0 24 24">
+                <path d="M20 6L9 17l-5-5" />
+            </svg>
+
+            <svg *ngIf="alert.type === 'error'" class="icon" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 8v4M12 16h.01" />
+            </svg>
+        </div>
+
+        <h3 id="alertTitle">{{ alert.title }}</h3>
+
+        <p>{{ alert.message }}</p>
+
+        <button class="btn btn-block" type="button" (click)="closeAlert()">OK</button>
+    </div>
+</div>

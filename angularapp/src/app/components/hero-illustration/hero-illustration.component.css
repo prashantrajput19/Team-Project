@@ -1,0 +1,66 @@
+:host {
+    display: block;
+}
+
+.hero-ill {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+}
+
+.bg { fill: var(--ill-bg); }
+.g { stroke: var(--ill-grid); stroke-width: 1; }
+.ground { fill: var(--ill-grid); }
+
+.sun { fill: var(--accent); }
+.sun-halo { fill: var(--accent); opacity: 0.16; }
+
+.sheet { fill: var(--ill-sheet); }
+.pl { stroke: var(--ill-sheet-line); stroke-width: 2.2; stroke-linecap: round; }
+.dim { stroke: var(--ill-line); stroke-width: 1.2; }
+.dim-t { fill: var(--ill-line); font: 600 11px var(--font-sans); }
+
+.wf { stroke: var(--accent); stroke-width: 1.6; stroke-dasharray: 5 5; animation: dash 18s linear infinite; }
+.node { fill: var(--accent); }
+
+.t { fill: var(--ill-top); }
+.l { fill: var(--ill-left); }
+.r { fill: var(--ill-right); }
+.l2 { fill: var(--ill-left); opacity: 0.85; }
+.r2 { fill: var(--ill-right); opacity: 0.85; }
+.w { fill: var(--ill-glass); }
+.roof { fill: var(--accent); }
+.roof2 { fill: #c98a12; }
+.door { fill: var(--ill-line); }
+
+.leaf { fill: #4caf7a; }
+.leaf-d { fill: #3a8c60; }
+.trunk { fill: #8a6a45; }
+.shadow { fill: #000; opacity: 0.12; }
+
+.flow { fill: none; stroke: var(--ill-line); stroke-width: 1.8; stroke-dasharray: 2 7; stroke-linecap: round; }
+.flow-head { fill: none; stroke: var(--ill-line); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+.card { fill: var(--ill-card); stroke: var(--ill-card-border); filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.18)); }
+.card-t { fill: var(--text); font: 600 14px var(--font-sans); }
+.card-m { fill: var(--text-muted); font: 600 13px var(--font-sans); }
+.av { fill: var(--accent); }
+.av-t { fill: #1a1a1a; font: 700 15px var(--font-display); }
+.st { fill: var(--star); }
+.ok { fill: var(--success); }
+.ok-t { fill: none; stroke: #fff; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+
+.float-a { animation: float 6s ease-in-out infinite; }
+.float-b { animation: float 6s ease-in-out -3s infinite; }
+
+@keyframes float {
+    50% { transform: translateY(-6px); }
+}
+
+@keyframes dash {
+    to { stroke-dashoffset: -200; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .wf, .float-a, .float-b { animation: none; }
+}

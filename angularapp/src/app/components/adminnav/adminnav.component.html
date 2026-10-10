@@ -1,0 +1,145 @@
+<nav class="navbar">
+    <a routerLink="/admin" class="logo">
+        <svg class="icon logo-icon" viewBox="0 0 24 24">
+            <path d="M3 21h18" />
+            <path d="M5 21V8l7-5 7 5v13" />
+            <path d="M10 21v-6h4v6" />
+        </svg>
+        ArchitectPoint
+    </a>
+
+    <button class="menu-btn" (click)="isMenuOpen = !isMenuOpen" aria-label="Toggle menu">
+        <svg *ngIf="!isMenuOpen" class="icon" viewBox="0 0 24 24">
+            <path d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+
+        <svg *ngIf="isMenuOpen" class="icon" viewBox="0 0 24 24">
+            <path d="M6 6l12 12M18 6L6 18" />
+        </svg>
+    </button>
+
+    <div class="links" [class.open]="isMenuOpen">
+        <a routerLink="/admin" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="link">
+            <svg class="icon" viewBox="0 0 24 24">
+                <rect x="3" y="3" width="7" height="7" rx="1" />
+                <rect x="14" y="3" width="7" height="7" rx="1" />
+                <rect x="3" y="14" width="7" height="7" rx="1" />
+                <rect x="14" y="14" width="7" height="7" rx="1" />
+            </svg>
+            Dashboard
+        </a>
+
+        <div class="dropdown">
+            <button class="dropdown-toggle" (click)="isSubMenuOpen = !isSubMenuOpen">
+                <svg class="icon" viewBox="0 0 24 24">
+                    <path d="M3 21h18" />
+                    <path d="M5 21V8l7-5 7 5v13" />
+                </svg>
+                Architects
+                <svg class="icon chevron" [class.open]="isSubMenuOpen" viewBox="0 0 24 24">
+                    <path d="M6 9l6 6 6-6" />
+                </svg>
+            </button>
+
+            <div class="dropdown-menu" *ngIf="isSubMenuOpen">
+                <a routerLink="/admin/architects/add" (click)="isSubMenuOpen = false">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 8v8M8 12h8" />
+                    </svg>
+                    Add Architect
+                </a>
+
+                <a routerLink="/admin/architects" (click)="isSubMenuOpen = false">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
+                    </svg>
+                    Manage Architects
+                </a>
+            </div>
+        </div>
+
+        <a routerLink="/admin/inquiries" routerLinkActive="active" class="link">
+            <svg class="icon" viewBox="0 0 24 24">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg>
+            Inquiries
+        </a>
+
+        <a routerLink="/admin/feedback" routerLinkActive="active" class="link">
+            <svg class="icon" viewBox="0 0 24 24">
+                <path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z" />
+            </svg>
+            Feedback
+        </a>
+
+        <div class="profile">
+            <button class="profile-btn" type="button" (click)="isProfileOpen = !isProfileOpen"
+                [attr.aria-expanded]="isProfileOpen" aria-label="Account menu" [title]="username">
+                <span class="user-avatar">{{ (username || "?").charAt(0) | uppercase }}</span>
+                <svg class="icon chevron" [class.open]="isProfileOpen" viewBox="0 0 24 24">
+                    <path d="M6 9l6 6 6-6" />
+                </svg>
+            </button>
+
+            <div class="profile-menu" *ngIf="isProfileOpen">
+                <div class="profile-head">
+                    <span class="user-avatar lg">{{ (username || "?").charAt(0) | uppercase }}</span>
+                    <span>
+                        <strong>{{ username }}</strong>
+                        <small>{{ role }}</small>
+                    </span>
+                </div>
+
+                <a class="menu-item" routerLink="/change-password">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <rect x="4" y="11" width="16" height="10" rx="2" />
+                        <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+                    </svg>
+                    Change password
+                </a>
+
+                <button class="menu-item" type="button" (click)="toggleTheme()">
+                    <svg *ngIf="isLight" class="icon" viewBox="0 0 24 24">
+                        <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z" />
+                    </svg>
+                    <svg *ngIf="!isLight" class="icon" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="4" />
+                        <path
+                            d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+                    </svg>
+                    {{ isLight ? "Dark mode" : "Light mode" }}
+                </button>
+
+                <button class="menu-item danger" type="button" (click)="askLogout()">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                        <path d="M16 17l5-5-5-5M21 12H9" />
+                    </svg>
+                    Logout
+                </button>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="modal" *ngIf="showLogoutModal" role="dialog" aria-modal="true" aria-labelledby="logoutTitle" tabindex="0"
+    (keydown)="handleModalKeydown($event)">
+    <div class="modal-card">
+        <div class="modal-icon error">
+            <svg class="icon" viewBox="0 0 24 24">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <path d="M16 17l5-5-5-5M21 12H9" />
+            </svg>
+        </div>
+
+        <h3 id="logoutTitle">Logout?</h3>
+
+        <p>Are you sure you want to logout of ArchitectPoint?</p>
+
+        <div class="modal-actions">
+            <button type="button" class="btn-secondary" (click)="cancelLogout()">Cancel</button>
+            <button type="button" class="btn-danger" (click)="confirmLogout()">Logout</button>
+        </div>
+    </div>
+</div>

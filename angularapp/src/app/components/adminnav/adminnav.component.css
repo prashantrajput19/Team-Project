@@ -1,0 +1,313 @@
+.navbar {
+    position: fixed;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    width: calc(100% - 32px);
+    max-width: 1100px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 24px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    backdrop-filter: blur(10px);
+}
+
+.navbar a {
+    color: var(--text);
+    text-decoration: none;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
+.logo-icon {
+    width: 24px;
+    height: 24px;
+    color: var(--accent);
+}
+
+.links {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 15px;
+    opacity: 0.8;
+}
+
+.link:hover,
+.link.active {
+    opacity: 1;
+}
+
+.link.active {
+    color: var(--accent-text);
+}
+
+.profile {
+    position: relative;
+    padding-left: 14px;
+    border-left: 1px solid var(--card-border);
+}
+
+.profile-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 6px 3px 3px;
+    color: var(--text-muted);
+    background: none;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    cursor: pointer;
+}
+
+.profile-btn:hover {
+    border-color: var(--input-border);
+}
+
+.user-avatar {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1a1a1a;
+    background: var(--accent);
+    border-radius: 50%;
+}
+
+.user-avatar.lg {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+}
+
+.profile-menu {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: -6px;
+    z-index: 10;
+    min-width: 230px;
+    padding: 6px;
+    background: var(--modal-bg);
+    border: 1px solid var(--input-border);
+    border-top: 2px solid var(--accent);
+    border-radius: 14px;
+    box-shadow: 0 18px 40px -12px rgba(0, 0, 0, 0.55), 0 0 0 1px var(--card-border);
+}
+
+.profile-menu::before {
+    content: "";
+    position: absolute;
+    top: -7px;
+    right: 20px;
+    width: 12px;
+    height: 12px;
+    background: var(--modal-bg);
+    border-top: 2px solid var(--accent);
+    border-left: 2px solid var(--accent);
+    transform: rotate(45deg);
+}
+
+.profile-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 10px 12px;
+    margin-bottom: 4px;
+    border-bottom: 1px solid var(--card-border);
+}
+
+.profile-head strong,
+.profile-head small {
+    display: block;
+}
+
+.profile-head small {
+    font-size: 12px;
+    color: var(--accent-text);
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    color: var(--text);
+    text-align: left;
+    background: none;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.menu-item:hover {
+    background: var(--input-bg);
+}
+
+.menu-item.danger {
+    color: var(--danger);
+}
+
+.menu-btn {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    color: var(--text);
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.dropdown {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.dropdown-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0;
+    font-size: 15px;
+    font-family: inherit;
+    line-height: inherit;
+    color: var(--text);
+    background: none;
+    border: none;
+    cursor: pointer;
+    opacity: 0.8;
+}
+
+.dropdown-toggle:hover {
+    opacity: 1;
+}
+
+.chevron {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.2s;
+}
+
+.chevron.open {
+    transform: rotate(180deg);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: calc(100% + 12px);
+    left: 0;
+    min-width: 190px;
+    display: flex;
+    flex-direction: column;
+    padding: 6px;
+    background: var(--modal-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+}
+
+.dropdown-menu a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 12px;
+    font-size: 14px;
+    border-radius: 8px;
+}
+
+.dropdown-menu a:hover {
+    background: var(--input-bg);
+}
+
+@media (max-width: 900px) {
+    .navbar {
+        flex-wrap: wrap;
+        padding: 12px 16px;
+    }
+
+    .menu-btn {
+        display: flex;
+    }
+
+    .links {
+        display: none;
+        flex-basis: 100%;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 4px;
+        max-height: calc(100vh - 120px);
+        margin-top: 12px;
+        padding-top: 12px;
+        overflow-y: auto;
+        border-top: 1px solid var(--card-border);
+    }
+
+    .links.open {
+        display: flex;
+    }
+
+    .link,
+    .dropdown-toggle {
+        padding: 10px 8px;
+        border-radius: 8px;
+    }
+
+    .link:hover {
+        background: var(--input-bg);
+    }
+
+    .profile {
+        margin-top: 6px;
+        padding: 10px 0 0;
+        border-left: none;
+        border-top: 1px solid var(--card-border);
+    }
+
+    .profile-menu {
+        position: static;
+        margin-top: 6px;
+        box-shadow: none;
+    }
+
+    .profile-menu::before {
+        display: none;
+    }
+
+    .dropdown {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .dropdown-menu {
+        position: static;
+        padding: 0 0 0 24px;
+        background: none;
+        border: none;
+        box-shadow: none;
+    }
+}

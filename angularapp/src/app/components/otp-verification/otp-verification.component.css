@@ -1,0 +1,68 @@
+:host {
+    display: contents;
+}
+
+.otp-send {
+    flex: none;
+    white-space: nowrap;
+}
+
+.otp-verified {
+    flex: none;
+    align-self: center;
+    padding: 0 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--success, #16a34a);
+    white-space: nowrap;
+}
+
+.otp-panel,
+.otp-error {
+    flex-basis: 100%;
+}
+
+.otp-panel {
+    margin-top: 8px;
+    padding: 12px;
+    background: var(--card-bg, rgba(127, 127, 127, 0.08));
+    border: 1px solid var(--card-border, rgba(127, 127, 127, 0.3));
+    border-radius: 10px;
+}
+
+.otp-row {
+    display: flex;
+    gap: 8px;
+}
+
+.otp-input {
+    flex: 1;
+    min-width: 0;
+    letter-spacing: 0.3em;
+}
+
+.otp-hint {
+    margin: 6px 0;
+    font-size: 13px;
+    color: var(--text-muted, inherit);
+}
+
+.otp-link {
+    padding: 0;
+    font: inherit;
+    color: inherit;
+    text-decoration: underline;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.otp-dev {
+    margin: 4px 0 8px;
+    padding: 8px 10px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--warning);
+    background: var(--warning-soft);
+    border-radius: 8px;
+}

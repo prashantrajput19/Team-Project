@@ -1,0 +1,150 @@
+:host {
+    --sky1: #10182a;
+    --sky2: #2a2f4a;
+    --sky3: #5e4740;
+    --halo: #f2b544;
+    --cloud: #3a4566;
+    --skyline: #26304a;
+    --hill: #1f3a33;
+    --lawn: #2b5443;
+    --wall: #ece7db;
+    --upper: #2a303b;
+    --slab: #f6f2ea;
+    --wood: #b77a45;
+    --slat: #8f5c31;
+    --door: #6b4529;
+    --panel: #20365c;
+    --panel-line: #4f84cf;
+    --tree: #3f9a68;
+    --tree-l: #5bb983;
+    --cypress: #2f7d55;
+    --draft: #1c3f6e;
+    --draft-grid: rgba(207, 224, 255, 0.12);
+    --draft-line: #cfe0ff;
+    --card: #1b222d;
+    --card-border: rgba(255, 255, 255, 0.1);
+    --bar: rgba(255, 255, 255, 0.22);
+    display: block;
+}
+
+:host-context(body.light) {
+    --sky1: #bcd8f2;
+    --sky2: #e6eef6;
+    --sky3: #fde3c3;
+    --cloud: #ffffff;
+    --skyline: #c9d6e4;
+    --hill: #b7dbb0;
+    --lawn: #93cb8c;
+    --upper: #39404d;
+    --panel: #2b4a7a;
+    --draft: #2559a5;
+    --draft-grid: rgba(255, 255, 255, 0.16);
+    --draft-line: #ffffff;
+    --card: #ffffff;
+    --card-border: rgba(20, 22, 26, 0.08);
+    --bar: rgba(20, 22, 26, 0.14);
+}
+
+.hero-ill {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+}
+
+.sky1 { stop-color: var(--sky1); }
+.sky2 { stop-color: var(--sky2); }
+.sky3 { stop-color: var(--sky3); }
+
+.halo { fill: var(--halo); opacity: 0.12; }
+.cloud { fill: var(--cloud); opacity: 0.8; }
+.skyline { fill: var(--skyline); }
+.hill { fill: var(--hill); }
+.lawn { fill: var(--lawn); }
+.deck { fill: var(--wood); opacity: 0.9; }
+
+.wall { fill: var(--wall); }
+.upper { fill: var(--upper); }
+.slab { fill: var(--slab); }
+.pillar { fill: var(--upper); }
+.lit { animation: glow 5s ease-in-out infinite; }
+.lit-b { animation-delay: -2.5s; }
+.mullion { stroke: var(--upper); stroke-width: 3; }
+.door { fill: var(--door); }
+.knob { fill: var(--accent); }
+.wood { fill: var(--wood); }
+.slat { stroke: var(--slat); stroke-width: 2; }
+.panel { fill: var(--panel); stroke: var(--slab); stroke-width: 1.5; }
+.panel-line { stroke: var(--panel-line); stroke-width: 1; }
+.pot { fill: #b5653f; }
+
+.ripple { fill: none; stroke: #ffffff; stroke-width: 2; stroke-linecap: round; opacity: 0.55; }
+.stone { fill: var(--slab); opacity: 0.85; }
+
+.tree { fill: var(--tree); }
+.tree-l { fill: var(--tree-l); opacity: 0.7; }
+.cypress { fill: var(--cypress); }
+.cypress-l { fill: var(--tree-l); opacity: 0.45; }
+.bush { fill: var(--tree); }
+.bush-l { fill: var(--tree-l); }
+.trunk { fill: #8a6a45; }
+.shadow { fill: #000; opacity: 0.16; }
+
+.draft { fill: var(--draft); opacity: 0.94; }
+.draft-grid { stroke: var(--draft-grid); stroke-width: 1; }
+.draft-line { fill: none; stroke: var(--draft-line); stroke-width: 1.8; stroke-linecap: round; }
+.draft-dim { fill: none; stroke: var(--accent); stroke-width: 1.4; }
+.draft-node { fill: var(--accent); }
+.seam { stroke: var(--accent); stroke-width: 2.5; stroke-dasharray: 6 6; animation: dash 14s linear infinite; }
+
+.pencil-body { fill: var(--accent); }
+.pencil-cap { fill: #e86a5a; }
+.pencil-wood { fill: #f3d6a8; }
+.pencil-tip { fill: #2a303b; }
+.pencil { animation: sketch 4s ease-in-out infinite; transform-origin: 292px 170px; }
+
+.pin-body { fill: #e8573f; filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.25)); }
+.pin-dot { fill: #ffffff; }
+.pin-shadow { fill: #000; opacity: 0.22; }
+.pin { animation: bounce 2.8s ease-in-out infinite; }
+
+.card { fill: var(--card); stroke: var(--card-border); filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.22)); }
+.bar { fill: var(--bar); }
+.bar.soft { opacity: 0.6; }
+.av { fill: var(--accent); }
+.av-person { fill: #1a1a1a; opacity: 0.75; }
+.st { fill: var(--star); }
+.ok { fill: var(--success); }
+.ok-t { fill: none; stroke: #ffffff; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+
+.float-a { animation: float 6s ease-in-out infinite; }
+.float-b { animation: float 6s ease-in-out -3s infinite; }
+.drift-a { animation: drift 16s ease-in-out infinite; }
+.drift-b { animation: drift 20s ease-in-out -6s infinite; }
+
+@keyframes float {
+    50% { transform: translateY(-7px); }
+}
+
+@keyframes bounce {
+    50% { transform: translateY(-9px); }
+}
+
+@keyframes drift {
+    50% { transform: translateX(14px); }
+}
+
+@keyframes glow {
+    50% { opacity: 0.82; }
+}
+
+@keyframes sketch {
+    50% { transform: translate(0, 22px) rotate(-3deg); }
+}
+
+@keyframes dash {
+    to { stroke-dashoffset: -200; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .float-a, .float-b, .drift-a, .drift-b, .pin, .pencil, .lit, .seam { animation: none; }
+}
