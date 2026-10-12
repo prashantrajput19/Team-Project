@@ -40,6 +40,12 @@
                 <option *ngFor="let category of categoryOptions" [value]="category">{{ category }}</option>
             </select>
 
+            <select class="select" [value]="deletedFilter" (change)="deletedFilter = $any($event.target).value">
+                <option value="">All feedback</option>
+                <option value="active">Not deleted</option>
+                <option value="deleted">Deleted</option>
+            </select>
+
             <select class="select" [value]="sortBy" (change)="sortBy = $any($event.target).value">
                 <option value="">Sort: default</option>
                 <option value="high">Rating: high to low</option>
@@ -69,7 +75,7 @@
                         <td colspan="6" class="no-results">No feedback matches your search</td>
                     </tr>
 
-                    <tr *ngFor="let feedback of filteredFeedbacks">
+                    <tr *ngFor="let feedback of pagedFeedbacks">
                         <td class="nowrap">
                             <div class="named">
                                 <span class="avatar">{{ (userName(feedback) || "?").charAt(0) | uppercase }}</span>
@@ -81,7 +87,10 @@
 
                         <td class="nowrap cell-muted">{{ architectName(feedback) || "—" }}</td>
 
-                        <td class="cell-message">{{ feedback.feedbackText }}</td>
+                        <td class="cell-message">
+                            {{ feedback.feedbackText }}
+                            <span class="status inactive" *ngIf="feedback.deleted">Deleted by user</span>
+                        </td>
 
                         <td class="nowrap"><span class="tag">{{ feedback.category }}</span></td>
                         <td class="nowrap">
@@ -95,6 +104,16 @@
                     </tr>
                 </tbody>
             </table>
+        </div>
+
+        <div class="pager" *ngIf="totalPages > 1">
+            <button class="btn-secondary" type="button" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">
+                Previous
+            </button>
+            <span class="pager-info">Page {{ currentPage }} of {{ totalPages }}</span>
+            <button class="btn-secondary" type="button" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">
+                Next
+            </button>
         </div>
     </div>
 </div>

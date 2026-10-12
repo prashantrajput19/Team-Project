@@ -1,0 +1,143 @@
+<!-- Floating "Ask Archie" button -->
+<button class="ai-fab" type="button" (click)="toggle()" [class.open]="isOpen"
+    [attr.aria-label]="isOpen ? 'Close Archie' : 'Open Archie, the AI assistant'">
+    <svg *ngIf="!isOpen" class="icon ai-logo" viewBox="0 0 24 24">
+        <circle cx="10" cy="5" r="2" />
+        <path d="M9 6.8L4 21M11 6.8L16 21M6 15.5q4 2 8 0" />
+        <path class="spark" d="M19 2l.8 1.7 1.7.8-1.7.8L19 7l-.8-1.7-1.7-.8 1.7-.8z" />
+    </svg>
+    <svg *ngIf="isOpen" class="icon" viewBox="0 0 24 24">
+        <path d="M6 6l12 12M18 6L6 18" />
+    </svg>
+    <span class="ai-fab-label" *ngIf="!isOpen">Ask Archie</span>
+</button>
+
+<!-- Chat dialog -->
+<section class="ai-panel" *ngIf="isOpen" role="dialog" aria-label="Archie AI assistant">
+    <header class="ai-head">
+        <span class="ai-badge">
+            <svg class="icon ai-logo" viewBox="0 0 24 24">
+                <circle cx="10" cy="5" r="2" />
+                <path d="M9 6.8L4 21M11 6.8L16 21M6 15.5q4 2 8 0" />
+                <path class="spark" d="M19 2l.8 1.7 1.7.8-1.7.8L19 7l-.8-1.7-1.7-.8 1.7-.8z" />
+            </svg>
+        </span>
+
+        <div class="ai-title">
+            <strong>Archie <span class="ai-tag">AI</span></strong>
+            <span>{{ isAdmin ? "Admin assistant" : "Your architect guide" }} · can make mistakes</span>
+        </div>
+
+        <button class="ai-icon-btn" type="button" title="New chat" aria-label="Start a new chat"
+            *ngIf="messages.length" (click)="newChat()">
+            <svg class="icon" viewBox="0 0 24 24">
+                <path d="M12 5v14M5 12h14" />
+            </svg>
+        </button>
+
+        <button class="ai-icon-btn" type="button" title="Close" aria-label="Close" (click)="close()">
+            <svg class="icon" viewBox="0 0 24 24">
+                <path d="M6 6l12 12M18 6L6 18" />
+            </svg>
+        </button>
+    </header>
+
+    <div class="ai-body" #chatBody>
+        <div class="ai-setup" *ngIf="!enabled">
+            <strong>Archie is not set up yet.</strong>
+            Add your Groq key to <code>springapp/secrets.properties</code> as <code>groq.api-key=gsk_...</code>
+            and restart the backend.
+        </div>
+
+        <div class="bubble assistant">{{ greeting }}</div>
+
+        <!-- Suggested questions (only before the first message) -->
+        <div class="ai-prompts" *ngIf="enabled && !messages.length">
+            <button class="ai-chip" type="button" *ngFor="let prompt of prompts" (click)="askPrompt(prompt)">
+                {{ prompt }}
+            </button>
+        </div>
+
+        <ng-container *ngFor="let message of messages">
+            <div class="bubble" [class.user]="message.role === 'user'" [class.assistant]="message.role === 'assistant'"
+                [class.error]="message.error">{{ message.content }}</div>
+
+            <!-- Something Archie prepared: the user can edit it, then press Send -->
+            <div class="ai-draft" *ngIf="message.draft as draft" [class.sent]="draft.state === 'sent'"
+                [hidden]="draft.state === 'cancelled'">
+                <div class="ai-draft-head">
+                    <span class="ai-draft-kind">{{ draftLabel(draft) }}</span>
+                    <strong>{{ draft.title }}</strong>
+                </div>
+
+                <ng-container *ngIf="draft.state !== 'sent'">
+                    <!-- Stars for feedback -->
+                    <div class="ai-stars" *ngIf="draft.type === 'feedback'">
+                        <button type="button" *ngFor="let star of [1, 2, 3, 4, 5]" [class.on]="star <= (draft.rating || 0)"
+                            [attr.aria-label]="star + ' stars'" (click)="draft.rating = star">&#9733;</button>
+                        <span *ngIf="!draft.rating">Tap a star to rate</span>
+                    </div>
+
+                    <textarea class="textarea" rows="4" [(ngModel)]="draft.text" maxlength="2000"
+                        aria-label="Message text"></textarea>
+
+                    <div class="ai-draft-row" *ngIf="draft.type === 'feedback'">
+                        <label>Category
+                            <select class="select" [(ngModel)]="draft.category">
+                                <option *ngFor="let option of categoryOptions" [value]="option">{{ option }}</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div class="ai-draft-row" *ngIf="draft.type === 'inquiry'">
+                        <label>Priority
+                            <select class="select" [(ngModel)]="draft.priority">
+                                <option *ngFor="let option of priorityOptions" [value]="option">{{ option }}</option>
+                            </select>
+                        </label>
+                        <label>Phone number
+                            <input class="input" type="tel" maxlength="10" [(ngModel)]="draft.contactDetails"
+                                placeholder="10-digit mobile" />
+                        </label>
+                    </div>
+
+                    <div class="field-error" *ngIf="draft.error">{{ draft.error }}</div>
+
+                    <div class="ai-draft-actions">
+                        <button class="btn-secondary" type="button" [disabled]="draft.state === 'sending'"
+                            (click)="draft.state = 'cancelled'">Cancel</button>
+                        <button class="btn btn-accent" type="button" [disabled]="!canSend(draft)" (click)="sendDraft(draft)">
+                            <span class="spinner" *ngIf="draft.state === 'sending'"></span>
+                            {{ draft.state === "sending" ? "Sending..." : "Send" }}
+                        </button>
+                    </div>
+                </ng-container>
+
+                <div class="ai-draft-done" *ngIf="draft.state === 'sent'">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M20 6L9 17l-5-5" />
+                    </svg>
+                    Sent!
+                    <button class="ai-link" type="button" (click)="openSent(draft)">View &rarr;</button>
+                </div>
+            </div>
+        </ng-container>
+
+        <!-- "Archie is typing" dots -->
+        <div class="bubble assistant typing" *ngIf="isSending">
+            <span></span><span></span><span></span>
+        </div>
+    </div>
+
+    <form class="ai-input" (ngSubmit)="send()">
+        <textarea class="textarea" name="question" rows="1" [(ngModel)]="question" (keydown)="onKeydown($event)"
+            [disabled]="!enabled" maxlength="2000" aria-label="Message"
+            [placeholder]="isAdmin ? 'Ask about architects, feedback, inquiries...' : 'Ask Archie anything...'"></textarea>
+        <button class="btn btn-accent" type="submit" [disabled]="!enabled || isSending || !question.trim()"
+            aria-label="Send">
+            <svg class="icon" viewBox="0 0 24 24">
+                <path d="M5 12h14M13 6l6 6-6 6" />
+            </svg>
+        </button>
+    </form>
+</section>

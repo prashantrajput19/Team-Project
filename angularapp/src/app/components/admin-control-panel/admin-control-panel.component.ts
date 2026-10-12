@@ -76,9 +76,9 @@ export class AdminControlPanelComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.architectService.getAllArchitects().subscribe(architects => this.architects = architects || []);
-    this.inquiryService.getAllInquiries().subscribe(inquiries => this.inquiries = inquiries || []);
-    this.feedbackService.getFeedbacks().subscribe(feedbacks => this.feedbacks = feedbacks || []);
+    this.architectService.getAllArchitects().subscribe(architects => this.architects = architects);
+    this.inquiryService.getAllInquiries().subscribe(inquiries => this.inquiries = inquiries);
+    this.feedbackService.getFeedbacks().subscribe(feedbacks => this.feedbacks = feedbacks);
   }
 
   get username(): string {
@@ -97,12 +97,14 @@ export class AdminControlPanelComponent implements OnInit {
     return this.inquiryStatus.reduce((sum, slice) => sum + slice.value, 0);
   }
 
+  // Average of rated architects only; new architects (rating 0) are skipped
   get averageRating(): string {
-    if (this.architects.length === 0) {
+    const rated = this.architects.filter(a => Number(a.rating) > 0);
+    if (rated.length === 0) {
       return '—';
     }
-    const total = this.architects.reduce((sum, a) => sum + (Number(a.rating) || 0), 0);
-    return (total / this.architects.length).toFixed(1);
+    const total = rated.reduce((sum, a) => sum + Number(a.rating), 0);
+    return (total / rated.length).toFixed(1);
   }
 
   // Builds one SVG path per pie slice (circle of radius 90 centred at 100,100).

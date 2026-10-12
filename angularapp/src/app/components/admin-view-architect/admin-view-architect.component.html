@@ -91,7 +91,7 @@
                         <td colspan="7" class="no-results">No architects match your search</td>
                     </tr>
 
-                    <tr *ngFor="let architect of filteredArchitects">
+                    <tr *ngFor="let architect of pagedArchitects">
                         <td class="nowrap">
                             <div class="named">
                                 <span class="avatar">{{ (architect.name || "").charAt(0) | uppercase }}</span>
@@ -139,6 +139,16 @@
                     </tr>
                 </tbody>
             </table>
+        </div>
+
+        <div class="pager" *ngIf="totalPages > 1">
+            <button class="btn-secondary" type="button" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">
+                Previous
+            </button>
+            <span class="pager-info">Page {{ currentPage }} of {{ totalPages }}</span>
+            <button class="btn-secondary" type="button" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">
+                Next
+            </button>
         </div>
     </div>
 </div>

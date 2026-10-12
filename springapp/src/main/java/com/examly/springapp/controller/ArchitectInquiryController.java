@@ -2,7 +2,6 @@ package com.examly.springapp.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,8 +21,11 @@ import com.examly.springapp.service.ArchitectInquiryService;
 @RestController
 @RequestMapping("/api/inquiries")
 public class ArchitectInquiryController {
-    @Autowired
-    private ArchitectInquiryService inquiryService;
+    private final ArchitectInquiryService inquiryService;
+
+    public ArchitectInquiryController(ArchitectInquiryService inquiryService) {
+        this.inquiryService = inquiryService;
+    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

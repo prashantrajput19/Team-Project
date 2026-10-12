@@ -9,4 +9,6 @@ export interface Feedback {
   architect?: Partial<Architect>;
   category: string;
   rating?: number;
+  inquiryId?: number;
+  deleted?: boolean;
 }

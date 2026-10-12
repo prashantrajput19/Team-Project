@@ -51,7 +51,7 @@ export class AdminViewArchitectComponent implements OnInit {
     this.architectService.getAllArchitects().subscribe({
       next: (architects) => {
         this.isLoading = false;
-        this.architects = architects || [];
+        this.architects = architects;
       },
       error: (error) => {
         this.isLoading = false;
@@ -65,11 +65,11 @@ export class AdminViewArchitectComponent implements OnInit {
       // First add up the ratings for each architect...
       const totals: { [architectId: number]: { sum: number; count: number } } = {};
 
-      for (const feedback of feedbacks || []) {
-        const id = feedback.architect?.architectId;
-        if (!id || !feedback.rating) {
-          continue;
+      for (const feedback of feedbacks) {
+        if (!feedback.rating) {
+          continue; // this feedback has no stars
         }
+        const id = feedback.architect.architectId;
         totals[id] = totals[id] || { sum: 0, count: 0 };
         totals[id].sum += feedback.rating;
         totals[id].count++;
@@ -100,24 +100,48 @@ export class AdminViewArchitectComponent implements OnInit {
 
     const list = this.architects.filter(architect =>
       (!search ||
-        (architect.name || '').toLowerCase().includes(search) ||
-        (architect.location || '').toLowerCase().includes(search)) &&
+        architect.name.toLowerCase().includes(search) ||
+        architect.location.toLowerCase().includes(search)) &&
       (!this.expertiseFilter || architect.expertise === this.expertiseFilter) &&
       (!this.statusFilter || architect.status === this.statusFilter)
     );
 
-    const userAverage = (a: Architect) => this.userRatings[a.architectId ?? 0]?.average ?? 0;
+    const userAverage = (a: Architect) => this.userRatings[a.architectId]?.average ?? 0;
     const isActive = (a: Architect) => (a.status === 'Active' ? 1 : 0);
 
     switch (this.sortBy) {
       case 'userHigh': return list.sort((a, b) => userAverage(b) - userAverage(a));
       case 'userLow': return list.sort((a, b) => userAverage(a) - userAverage(b));
-      case 'ratingHigh': return list.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
-      case 'ratingLow': return list.sort((a, b) => (a.rating ?? 0) - (b.rating ?? 0));
+      case 'ratingHigh': return list.sort((a, b) => b.rating - a.rating);
+      case 'ratingLow': return list.sort((a, b) => a.rating - b.rating);
       case 'activeFirst': return list.sort((a, b) => isActive(b) - isActive(a));
       case 'inactiveFirst': return list.sort((a, b) => isActive(a) - isActive(b));
       default: return list;
     }
+  }
+
+  // Pagination: show 9 per page
+  page = 1;
+  pageSize = 9;
+
+  get totalPages(): number {
+    return Math.max(1, Math.ceil(this.filteredArchitects.length / this.pageSize));
+  }
+
+  // If filters make the list shorter, never stay on a page that no longer exists
+  get currentPage(): number {
+    return Math.min(this.page, this.totalPages);
+  }
+
+  get pagedArchitects(): Architect[] {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.filteredArchitects.slice(start, start + this.pageSize);
+  }
+
+  // Change page and jump back to the top of the page
+  goToPage(page: number): void {
+    this.page = page;
+    window.scrollTo(0, 0);
   }
 
   clearFilters(): void {
@@ -127,25 +151,15 @@ export class AdminViewArchitectComponent implements OnInit {
     this.sortBy = '';
   }
 
-  editArchitect(architectId: number | undefined): void {
-    if (architectId === undefined) {
-      this.showAlert('error', 'Failed', 'Architect ID is not available');
-      return;
-    }
-
+  editArchitect(architectId: number): void {
     this.router.navigate(['/admin/architects/edit', architectId]);
   }
 
   // Opens the delete popup. Only Inactive architects can be deleted.
-  deleteArchitect(architectId: number | undefined): void {
-    if (architectId === undefined) {
-      this.showAlert('error', 'Delete Failed', 'Architect ID is not available');
-      return;
-    }
-
+  deleteArchitect(architectId: number): void {
     const architect = this.architects.find(a => a.architectId === architectId);
 
-    if (architect?.status !== 'Inactive') {
+    if (architect.status !== 'Inactive') {
       this.showAlert('error', 'Cannot Delete',
         'Cannot delete an active architect. Mark the architect as Inactive first.');
       return;
@@ -156,12 +170,7 @@ export class AdminViewArchitectComponent implements OnInit {
   }
 
   confirmDelete(): void {
-    const architectId = this.architectToDelete?.architectId;
-
-    if (architectId === undefined) {
-      return;
-    }
-
+    const architectId = this.architectToDelete.architectId;
     this.isDeleting = true;
 
     this.architectService.deleteArchitect(architectId).subscribe({

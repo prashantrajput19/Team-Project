@@ -15,6 +15,7 @@ import { SignupComponent } from './components/signup/signup.component';
 import { HomePageComponent } from './components/home-page/home-page.component';
 import { ErrorComponent } from './components/error/error.component';
 import { SiteFooterComponent } from './components/site-footer/site-footer.component';
+import { AboutUsComponent } from './components/about-us/about-us.component';
 import { ArchitectPortfolioComponent } from './components/architect-portfolio/architect-portfolio.component';
 import { ArchitectAvatarComponent } from './components/architect-avatar/architect-avatar.component';
 import { ChangePasswordComponent } from './components/change-password/change-password.component';
@@ -25,6 +26,7 @@ import { HeroIllustrationComponent } from './components/hero-illustration/hero-i
 import { LoginIllustrationComponent } from './components/login-illustration/login-illustration.component';
 import { SignupIllustrationComponent } from './components/signup-illustration/signup-illustration.component';
 import { DesignArtComponent } from './components/design-art/design-art.component';
+import { AiAssistantComponent } from './components/ai-assistant/ai-assistant.component';
 
 import { AdminControlPanelComponent } from './components/admin-control-panel/admin-control-panel.component';
 import { AdminViewArchitectComponent } from './components/admin-view-architect/admin-view-architect.component';
@@ -49,6 +51,7 @@ import { UserViewFeedbackComponent } from './components/user-view-feedback/user-
     HomePageComponent,
     ErrorComponent,
     SiteFooterComponent,
+    AboutUsComponent,
     ArchitectPortfolioComponent,
     ArchitectAvatarComponent,
     ChangePasswordComponent,
@@ -59,6 +62,7 @@ import { UserViewFeedbackComponent } from './components/user-view-feedback/user-
     LoginIllustrationComponent,
     SignupIllustrationComponent,
     DesignArtComponent,
+    AiAssistantComponent,
     AdminControlPanelComponent,
     AdminViewArchitectComponent,
     AdminAddArchitectComponent,

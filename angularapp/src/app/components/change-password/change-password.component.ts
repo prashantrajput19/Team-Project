@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 
 import { AuthService } from '../../services/auth.service';
+import { describeError } from '../../error-message';
 
 @Component({
   selector: 'app-change-password',
@@ -38,9 +39,7 @@ export class ChangePasswordComponent {
       },
       error: error => {
         this.isSaving = false;
-        this.errorMessage = typeof error?.error === 'string' && error.error
-          ? error.error
-          : 'Could not change your password. Please try again.';
+        this.errorMessage = describeError(error, 'Could not change your password. Please try again.');
       }
     });
   }

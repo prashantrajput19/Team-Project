@@ -81,190 +81,15 @@
     border-top: 1px solid var(--input-border);
 }
 
-.team {
-    max-width: 1100px;
-    margin: 24px auto 0;
-    padding: 16px 18px;
-    background: var(--input-bg);
-    border: 1px solid var(--input-border);
-    border-radius: 18px;
-}
-
-.team-head {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    margin-bottom: 14px;
-}
-
-.team-badge {
-    display: grid;
-    flex: none;
-    place-items: center;
-    width: 40px;
-    height: 40px;
-    color: #1a1a1a;
-    background: linear-gradient(135deg, #f6c463, #e8892b);
-    border-radius: 16px;
-    box-shadow: 0 8px 20px -8px rgba(232, 137, 43, 0.7);
-}
-
-.team-badge .icon {
-    width: 26px;
-    height: 26px;
-    stroke-width: 2;
-}
-
-.team-kicker {
-    font-size: 12px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--text-soft);
-}
-
-.team-name {
-    margin: 0 0 2px;
-    font-size: clamp(20px, 2.2vw, 24px);
-    font-weight: 700;
-    letter-spacing: -0.03em;
-    background: linear-gradient(90deg, #f2b544, #e8892b 55%, #d9572b);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-}
-
-.team-note {
-    max-width: 60ch;
-    font-size: 13px;
-    line-height: 1.6;
-    color: var(--text-muted);
-}
-
-.team-grid {
-    display: grid;
-    grid-template-columns: 1.3fr repeat(3, 1fr);
-    gap: 8px;
-    list-style: none;
-}
-
-.member {
-    --tone: #6ea8ff;
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 12px 6px 6px;
-    background: var(--page-bg-alt);
-    border: 1px solid var(--input-border);
-    border-radius: 14px;
-    transition: transform 0.15s, border-color 0.15s;
-}
-
-.member:hover {
-    border-color: var(--tone);
-    transform: translateY(-2px);
-}
-
-.member[data-tone="1"] { --tone: #b56fd1; }
-.member[data-tone="2"] { --tone: #3e9b5c; }
-.member[data-tone="3"] { --tone: #e0724f; }
-.member[data-tone="4"] { --tone: #2fa39a; }
-.member[data-tone="5"] { --tone: #d19a2a; }
-
-.member-avatar {
-    position: relative;
-    display: grid;
-    flex: none;
-    place-items: center;
-    width: 30px;
-    height: 30px;
-    font-family: var(--font-display);
-    font-size: 14px;
-    font-weight: 600;
-    color: #fff;
-    background: var(--tone);
-    border-radius: 12px;
-}
-
-.member-text {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-}
-
-.member-text strong {
-    font-size: 13px;
-}
-
-.member-role {
-    font-size: 11px;
-    color: var(--text-muted);
-}
-
-.member.lead {
-    --tone: #e8892b;
-    grid-row: span 2;
-    flex-direction: column;
-    justify-content: center;
-    gap: 10px;
-    padding: 16px;
-    text-align: center;
-    background: linear-gradient(135deg, var(--accent-soft), transparent 70%), var(--page-bg-alt);
-    border: 1.5px solid var(--accent);
-    box-shadow: 0 10px 24px -14px rgba(232, 137, 43, 0.8);
-}
-
-.member.lead .member-avatar {
-    width: 52px;
-    height: 52px;
-    font-size: 22px;
-    color: #1a1a1a;
-    background: linear-gradient(135deg, #f6c463, #e8892b);
-}
-
-.member.lead .member-text {
-    align-items: center;
-}
-
-.member.lead .member-text strong {
-    font-size: 17px;
-}
-
-.member.lead .member-role {
-    font-weight: 600;
-    color: var(--accent-text);
-}
-
-.crown {
-    position: absolute;
-    top: -11px;
-    right: -9px;
-    width: 20px;
-    height: 20px;
-    fill: #f2b544;
-    stroke: var(--page-bg-alt);
-    stroke-width: 1.5;
-    transform: rotate(18deg);
-}
-
-.lead-pill {
-    position: absolute;
-    top: -9px;
-    right: 12px;
-    padding: 3px 10px;
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: #1a1a1a;
-    background: var(--accent);
-    border-radius: 999px;
-}
-
 .team-inline {
-    font-weight: 700;
+    margin-left: 6px;
+    font-weight: 600;
     color: var(--accent-text);
+    text-decoration: none;
+}
+
+.team-inline:hover {
+    text-decoration: underline;
 }
 
 @media (max-width: 700px) {
@@ -273,23 +98,6 @@
     }
 
     .footer-brand {
-        grid-column: 1 / -1;
-    }
-}
-
-.member-stack {
-    margin-top: 2px;
-    font-size: 11px;
-    color: var(--text-soft);
-}
-
-@media (max-width: 900px) {
-    .team-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .member.lead {
-        grid-row: auto;
         grid-column: 1 / -1;
     }
 }

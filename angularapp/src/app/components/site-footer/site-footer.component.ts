@@ -10,10 +10,6 @@ import { AuthService } from '../../services/auth.service';
 export class SiteFooterComponent {
   readonly year = new Date().getFullYear();
 
-  readonly teamName = 'Spring Warriors';
-  readonly leader = { name: 'Prashant', role: 'Team Leader' };
-  readonly members = ['Aman', 'Aakansha', 'Siddarth', 'Gowtam', 'Pritam', 'Sarayu'];
-
   constructor(private authService: AuthService) { }
 
   get isAdmin(): boolean {

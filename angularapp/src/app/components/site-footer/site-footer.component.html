@@ -16,6 +16,7 @@
             <h4>Explore</h4>
             <a routerLink="/home">Home</a>
             <a [routerLink]="isAdmin ? '/admin/architects' : '/user/architects'">Architects</a>
+            <a routerLink="/about">About us</a>
         </nav>
 
         <nav class="footer-col" aria-label="Your account" *ngIf="!isAdmin">
@@ -34,52 +35,8 @@
         </nav>
     </div>
 
-    <section class="team" aria-labelledby="teamName">
-        <div class="team-head">
-            <span class="team-badge" aria-hidden="true">
-                <svg class="icon" viewBox="0 0 24 24">
-                    <path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6z" />
-                    <path d="M9 12l2 2 4-4" />
-                </svg>
-            </span>
-            <div>
-                <span class="team-kicker">Designed &amp; built by</span>
-                <h4 class="team-name" id="teamName">{{ teamName }}</h4>
-                <p class="team-note">
-                    {{ members.length + 1 }} full-stack developers, each working on both the Angular frontend and the
-                    Spring Boot backend.
-                </p>
-            </div>
-        </div>
-
-        <ul class="team-grid">
-            <li class="member lead">
-                <span class="member-avatar">
-                    {{ leader.name.charAt(0) }}
-                    <svg class="crown" viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M3 18h18l-2-10-5 4-2-7-2 7-5-4z" />
-                    </svg>
-                </span>
-                <span class="member-text">
-                    <strong>{{ leader.name }}</strong>
-                    <span class="member-role">{{ leader.role }}</span>
-                    <span class="member-stack">Leads planning, reviews and releases</span>
-                </span>
-                <span class="lead-pill">Lead</span>
-            </li>
-
-            <li class="member" *ngFor="let member of members; let i = index" [attr.data-tone]="i % 6">
-                <span class="member-avatar">{{ member.charAt(0) }}</span>
-                <span class="member-text">
-                    <strong>{{ member }}</strong>
-                    <span class="member-role">Full-stack Developer</span>
-                </span>
-            </li>
-        </ul>
-    </section>
-
     <div class="footer-bottom">
-        <span>&copy; {{ year }} ArchitectPoint by <strong class="team-inline">{{ teamName }}</strong>. Built for people who build.</span>
+        <span>&copy; {{ year }} ArchitectPoint. Built for people who build. <a class="team-inline" routerLink="/about">Meet the team</a></span>
         <button class="btn-secondary" type="button" (click)="scrollTop()">
             Back to top
             <svg class="icon" viewBox="0 0 24 24">

@@ -9,8 +9,6 @@ import com.examly.springapp.model.ArchitectInquiry;
 
 @Repository
 public interface ArchitectInquiryRepo extends JpaRepository<ArchitectInquiry, Long> {
-    List<ArchitectInquiry> findByUserUserId(Long userId);
-
     List<ArchitectInquiry> findByArchitectArchitectId(Long architectId);
 
     List<ArchitectInquiry> findByDeletedFalse();

@@ -6,6 +6,7 @@ import { ArchitectInquiry } from '../../models/architect-inquiry.model';
 import { ArchitectService } from '../../services/architect.service';
 import { ArchitectInquiryService } from '../../services/architect-inquery.service';
 import { AuthService } from '../../services/auth.service';
+import { AiService } from '../../services/ai.service';
 import { describeError } from '../../error-message';
 
 @Component({
@@ -25,6 +26,7 @@ export class UserAddInquiryComponent implements OnInit {
 
   isLoading = false;
   isSaving = false;
+  isWriting = false; // true while Archie (AI) is writing
   errorMessage = '';
 
   // Success / error popup
@@ -34,6 +36,7 @@ export class UserAddInquiryComponent implements OnInit {
     private architectService: ArchitectService,
     private inquiryService: ArchitectInquiryService,
     private authService: AuthService,
+    private aiService: AiService,
     private route: ActivatedRoute,
     private router: Router
   ) { }
@@ -56,7 +59,7 @@ export class UserAddInquiryComponent implements OnInit {
     this.architectService.getAllArchitects().subscribe({
       next: (architects) => {
         this.isLoading = false;
-        const found = (architects || []).find(a => a.architectId === this.architectId);
+        const found = architects.find(a => a.architectId === this.architectId);
 
         if (!found) {
           this.errorMessage = 'Architect not found';
@@ -73,13 +76,28 @@ export class UserAddInquiryComponent implements OnInit {
     });
   }
 
+  // Archie (AI) turns the user's rough notes into a clear inquiry message
+  writeWithAi(): void {
+    this.isWriting = true;
+
+    this.aiService.write({
+      type: 'inquiry',
+      notes: this.message,
+      architectId: this.architectId
+    }).subscribe({
+      next: (response) => {
+        this.isWriting = false;
+        this.message = response.text;
+      },
+      error: (error) => {
+        this.isWriting = false;
+        this.showAlert('error', 'Archie', describeError(error, 'Archie could not write it. Please try again.'));
+      }
+    });
+  }
+
   save(): void {
     const userId = this.authService.getUserId();
-
-    if (!userId || !this.architect) {
-      this.showAlert('error', 'Failed', 'Please choose an architect from the list and try again.');
-      return;
-    }
 
     const inquiry: ArchitectInquiry = {
       user: { userId },

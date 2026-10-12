@@ -2,11 +2,10 @@ package com.examly.springapp.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.examly.springapp.exceptions.ArchitectInquiryException;
 import com.examly.springapp.exceptions.ResourceNotFoundException;
+import com.examly.springapp.model.Architect;
 import com.examly.springapp.model.Feedback;
 import com.examly.springapp.repository.ArchitectRepo;
 import com.examly.springapp.repository.FeedbackRepo;
@@ -14,52 +13,77 @@ import com.examly.springapp.repository.UserRepo;
 
 @Service
 public class FeedbackServiceImpl implements FeedbackService {
-    @Autowired
-    private FeedbackRepo feedbackRepo;
+    private final FeedbackRepo feedbackRepo;
 
-    @Autowired
-    private UserRepo userRepo;
+    private final UserRepo userRepo;
 
-    @Autowired
-    private ArchitectRepo architectRepo;
+    private final ArchitectRepo architectRepo;
+
+    public FeedbackServiceImpl(
+        FeedbackRepo feedbackRepo,
+        UserRepo userRepo,
+        ArchitectRepo architectRepo) {
+        this.feedbackRepo = feedbackRepo;
+        this.userRepo = userRepo;
+        this.architectRepo = architectRepo;
+    }
 
     @Override
     public Feedback createFeedback(Feedback feedback) {
-        if (feedback.getUser() == null || feedback.getUser().getUserId() == null) {
-            throw new ArchitectInquiryException("Feedback must name the user leaving it.");
-        }
-
         Long userId = feedback.getUser().getUserId();
+        Long architectId = feedback.getArchitect().getArchitectId();
+
         feedback.setUser(userRepo.findById(userId)
-                .orElseThrow(() -> new ArchitectInquiryException(
-                        "User with id " + userId + " does not exist.")));
+                .orElseThrow(() -> new ResourceNotFoundException("User with id " + userId + " does not exist.")));
+        feedback.setArchitect(architectRepo.findById(architectId)
+                .orElseThrow(() -> new ResourceNotFoundException("Architect with id " + architectId + " does not exist.")));
 
-        if (feedback.getArchitect() != null && feedback.getArchitect().getArchitectId() != null) {
-            Long architectId = feedback.getArchitect().getArchitectId();
-            feedback.setArchitect(architectRepo.findById(architectId)
-                    .orElseThrow(() -> new ArchitectInquiryException(
-                            "Architect with id " + architectId + " does not exist.")));
-        } 
+        Feedback saved = feedbackRepo.save(feedback);
+        updateArchitectRating(saved.getArchitect());
+        return saved;
+    }
 
-        Integer rating = feedback.getRating();
-        if (rating != null && (rating < 1 || rating > 5)) {
-            throw new ArchitectInquiryException("Rating must be between 1 and 5.");
+    // Architect rating = average of all ratings in that architect's feedback
+    private void updateArchitectRating(Architect architect) {
+        List<Feedback> feedbacks = feedbackRepo.findByArchitectArchitectIdAndDeletedFalse(architect.getArchitectId());
+        int total = 0;
+        int count = 0;
+        for (Feedback f : feedbacks) {
+            if (f.getRating() != null) {
+                total = total + f.getRating();
+                count = count + 1;
+            }
         }
 
-        return feedbackRepo.save(feedback);
+        // Show a rating only after at least 3 feedbacks; until then rating stays 0
+        // and the app shows "Rising Star" instead.
+        double average = 0;
+        if (count >= 3) {
+            average = Math.round(total * 10.0 / count) / 10.0; // keep 1 decimal, e.g. 4.3
+        }
+
+        architect.setRating(average);
+        architectRepo.save(architect);
     }
 
     @Override
     public Feedback getFeedbackById(Long feedbackId) {
-        return feedbackRepo.findById(feedbackId)
-                .filter(feedback -> !feedback.isDeleted())
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Feedback with id " + feedbackId + " does not exist."));
+        Feedback feedback = feedbackRepo.findById(feedbackId).orElse(null);
+        if (feedback == null || feedback.isDeleted()) {
+            throw new ResourceNotFoundException("Feedback with id " + feedbackId + " does not exist.");
+        }
+        return feedback;
     }
 
     @Override
     public List<Feedback> getAllFeedback() {
         return feedbackRepo.findByDeletedFalse();
+    }
+
+    // For admin: every feedback, also the deleted ones
+    @Override
+    public List<Feedback> getAllFeedbackIncludingDeleted() {
+        return feedbackRepo.findAll();
     }
 
     @Override
@@ -72,5 +96,6 @@ public class FeedbackServiceImpl implements FeedbackService {
         Feedback feedback = getFeedbackById(feedbackId);
         feedback.setDeleted(true);
         feedbackRepo.save(feedback);
+        updateArchitectRating(feedback.getArchitect());
     }
 }

@@ -5,6 +5,7 @@ import { ArchitectInquiry } from '../../models/architect-inquiry.model';
 import { ArchitectInquiryService } from '../../services/architect-inquery.service';
 import { AuthService } from '../../services/auth.service';
 import { FeedbackService } from '../../services/feedback.service';
+import { AiService } from '../../services/ai.service';
 import { describeError } from '../../error-message';
 
 @Component({
@@ -25,8 +26,11 @@ export class UserViewInquiriesComponent implements OnInit {
   // Follow-up text typed under each inquiry, keyed by inquiryId.
   drafts: { [inquiryId: number]: string } = {};
 
-  // Stars this user already gave each architect, keyed by architectId.
-  myRatings: { [architectId: number]: number } = {};
+  // The inquiry Archie (AI) is writing a follow-up for right now
+  writingId = 0;
+
+  // Stars this user already gave for each inquiry, keyed by inquiryId.
+  myRatings: { [inquiryId: number]: number } = {};
 
   // Delete popup
   inquiryToDelete?: ArchitectInquiry;
@@ -40,6 +44,7 @@ export class UserViewInquiriesComponent implements OnInit {
     private inquiryService: ArchitectInquiryService,
     private feedbackService: FeedbackService,
     private authService: AuthService,
+    private aiService: AiService,
     private router: Router,
     private route: ActivatedRoute
   ) { }
@@ -53,19 +58,13 @@ export class UserViewInquiriesComponent implements OnInit {
 
   loadInquiries(): void {
     const userId = this.authService.getUserId();
-
-    if (!userId) {
-      this.errorMessage = 'Please login again to see your inquiries';
-      return;
-    }
-
     this.errorMessage = '';
     this.isLoading = true;
 
     this.inquiryService.getInquiriesByUserId(userId).subscribe({
       next: (inquiries) => {
         this.isLoading = false;
-        this.inquiries = inquiries || [];
+        this.inquiries = inquiries.sort((a, b) => b.inquiryId - a.inquiryId); // newest first
       },
       error: (error) => {
         this.isLoading = false;
@@ -76,30 +75,26 @@ export class UserViewInquiriesComponent implements OnInit {
 
   loadMyRatings(): void {
     const userId = this.authService.getUserId();
-    if (!userId) {
-      return;
-    }
 
     this.feedbackService.getAllFeedbacksByUserId(userId).subscribe(feedbacks => {
-      for (const feedback of feedbacks || []) {
-        const architectId = feedback.architect?.architectId;
-        if (architectId && feedback.rating) {
-          this.myRatings[architectId] = feedback.rating;
+      for (const feedback of feedbacks) {
+        if (feedback.inquiryId && feedback.rating) {
+          this.myRatings[feedback.inquiryId] = feedback.rating;
         }
       }
     });
   }
 
   ratingFor(inquiry: ArchitectInquiry): number {
-    return this.myRatings[inquiry.architect?.architectId ?? 0] || 0;
+    return this.myRatings[inquiry.inquiryId] || 0;
   }
 
   giveFeedback(inquiry: ArchitectInquiry): void {
-    this.router.navigate(['/user/feedback/add'], { queryParams: { architectId: inquiry.architect?.architectId } });
+    this.router.navigate(['/user/feedback/add'], { queryParams: { architectId: inquiry.architect.architectId, inquiryId: inquiry.inquiryId } });
   }
 
   get statusOptions(): string[] {
-    const statuses = this.inquiries.map(i => i.status || '').filter(s => !!s);
+    const statuses = this.inquiries.map(i => i.status);
     return Array.from(new Set(statuses)).sort();
   }
 
@@ -112,11 +107,35 @@ export class UserViewInquiriesComponent implements OnInit {
 
     return this.inquiries.filter(inquiry =>
       (!search ||
-        (inquiry.message || '').toLowerCase().includes(search) ||
-        (inquiry.architect?.name || '').toLowerCase().includes(search)) &&
+        inquiry.message.toLowerCase().includes(search) ||
+        inquiry.architect.name.toLowerCase().includes(search)) &&
       (!this.statusFilter || inquiry.status === this.statusFilter) &&
       (!this.inquiryIdFilter || inquiry.inquiryId === this.inquiryIdFilter)
     );
+  }
+
+  // Pagination: show 5 per page
+  page = 1;
+  pageSize = 5;
+
+  get totalPages(): number {
+    return Math.max(1, Math.ceil(this.filteredInquiries.length / this.pageSize));
+  }
+
+  // If filters make the list shorter, never stay on a page that no longer exists
+  get currentPage(): number {
+    return Math.min(this.page, this.totalPages);
+  }
+
+  get pagedInquiries(): ArchitectInquiry[] {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.filteredInquiries.slice(start, start + this.pageSize);
+  }
+
+  // Change page and jump back to the top of the page
+  goToPage(page: number): void {
+    this.page = page;
+    window.scrollTo(0, 0);
   }
 
   clearFilters(): void {
@@ -125,8 +144,25 @@ export class UserViewInquiriesComponent implements OnInit {
     this.inquiryIdFilter = 0;
   }
 
+  // Archie (AI) writes a follow-up question (uses what the user typed as notes)
+  writeWithAi(inquiry: ArchitectInquiry): void {
+    const id = inquiry.inquiryId;
+    this.writingId = id;
+
+    this.aiService.write({ type: 'followup', notes: this.drafts[id] || '', inquiryId: id }).subscribe({
+      next: (response) => {
+        this.writingId = 0;
+        this.drafts[id] = response.text;
+      },
+      error: (error) => {
+        this.writingId = 0;
+        this.showAlert('error', 'Archie', describeError(error, 'Archie could not write it. Please try again.'));
+      }
+    });
+  }
+
   sendSubInquiry(inquiry: ArchitectInquiry): void {
-    const id = inquiry.inquiryId!;
+    const id = inquiry.inquiryId;
     const message = (this.drafts[id] || '').trim();
 
     if (!message) {
@@ -151,12 +187,7 @@ export class UserViewInquiriesComponent implements OnInit {
   }
 
   confirmDelete(): void {
-    const inquiryId = this.inquiryToDelete?.inquiryId;
-
-    if (inquiryId === undefined) {
-      return;
-    }
-
+    const inquiryId = this.inquiryToDelete.inquiryId;
     this.isDeleting = true;
 
     this.inquiryService.deleteInquiry(inquiryId).subscribe({

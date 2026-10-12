@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600&family=Playfair+Display:ital,wght@0,700;1,700&display=swap");
 
 * {
     margin: 0;
@@ -586,6 +586,7 @@ label {
 .sub-item {
     max-width: 640px;
     padding: 10px 14px;
+    overflow-wrap: anywhere; /* break very long words so they stay inside the box */
     background: var(--page-bg-alt);
     border-radius: 10px;
 }
@@ -722,6 +723,7 @@ label {
     max-width: 340px;
     line-height: 1.5;
     color: var(--text-muted);
+    overflow-wrap: anywhere; /* break very long words so they stay inside the column */
 }
 
 .ext-link {
@@ -926,4 +928,60 @@ label {
     .field-row {
         grid-template-columns: 1fr;
     }
+}
+
+/* Previous / Next page buttons under lists */
+.pager {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.pager-info {
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+/* "Write with AI" button (Archie) used on the feedback, inquiry and reply forms */
+.label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.label-row label {
+    margin-bottom: 0;
+}
+
+.ai-write-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 11px;
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+    color: var(--accent-text);
+    background: var(--accent-soft);
+    border: 1px solid transparent;
+    border-radius: 999px;
+    cursor: pointer;
+}
+
+.ai-write-btn:hover:not(:disabled) {
+    border-color: var(--accent);
+}
+
+.ai-write-btn:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+.ai-write-btn .spinner {
+    width: 12px;
+    height: 12px;
 }

@@ -1,0 +1,370 @@
+/* ---------- Heading ---------- */
+.about-head {
+    max-width: 760px;
+    margin: 0 auto 56px;
+    text-align: center;
+}
+
+.team-heading {
+    margin-bottom: 18px;
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: clamp(40px, 6vw, 68px);
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--text);
+}
+
+/* team name in italic with the same colours as the cards (gold mentor, accent, blue lead) */
+.team-heading span {
+    font-style: italic;
+    background: linear-gradient(90deg, #f2b544, var(--accent), #3b82f6);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.accent {
+    color: var(--accent-text);
+}
+
+/* ---------- Tree ---------- */
+.tree {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Vertical line between levels, with a moving glow */
+.line {
+    width: 2px;
+    height: 56px;
+    background: linear-gradient(var(--accent), transparent, var(--accent));
+    background-size: 100% 200%;
+    animation: flow 2.5s linear infinite;
+}
+
+/* ---------- Profile card ---------- */
+.card {
+    /* each card picks a colour with data-tone below */
+    --tone: var(--accent);
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    text-align: center;
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: 22px;
+    box-shadow: var(--shadow-sm);
+    overflow-wrap: anywhere;
+    transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+    animation: rise 0.6s ease-out backwards;
+}
+
+.card:hover {
+    transform: translateY(-6px);
+    border-color: var(--tone);
+    box-shadow: 0 20px 40px -18px var(--tone);
+}
+
+/* coloured top part of the card */
+.cover {
+    position: relative;
+    height: 84px;
+    background:
+        radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.25), transparent 40%),
+        linear-gradient(135deg, var(--tone), color-mix(in srgb, var(--tone) 40%, var(--page-bg)));
+}
+
+/* small dotted pattern on the cover */
+.cover::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.25) 1px, transparent 1px);
+    background-size: 14px 14px;
+}
+
+.card-tag {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 1;
+    padding: 4px 12px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #1a1a1a;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 999px;
+}
+
+/* round photo that sits half on the cover */
+.photo {
+    position: relative;
+    width: 96px;
+    height: 96px;
+    margin: -48px auto 0;
+    padding: 4px;
+    border-radius: 50%;
+    background: var(--input-bg);
+    box-shadow: 0 0 0 3px var(--tone);
+}
+
+.photo img,
+.photo span {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    object-fit: cover;
+    object-position: top;
+    font-family: var(--font-display);
+    font-size: 36px;
+    font-weight: 600;
+    color: var(--tone);
+    background: var(--page-bg-alt);
+    border-radius: 50%;
+}
+
+.card-body {
+    padding: 14px 20px 22px;
+}
+
+.card h3 {
+    font-size: 19px;
+}
+
+.role {
+    display: block;
+    margin-top: 2px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--tone);
+}
+
+.about {
+    margin-top: 10px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-muted);
+}
+
+.skills {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 14px;
+}
+
+.skill {
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    background: color-mix(in srgb, var(--tone) 16%, transparent);
+    border: 1px solid color-mix(in srgb, var(--tone) 35%, transparent);
+    border-radius: 999px;
+}
+
+.linkedin {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 16px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    text-decoration: none;
+    background: #0a66c2;
+    border-radius: 10px;
+    transition: background-color 0.15s;
+}
+
+.linkedin:hover {
+    background: #004182;
+}
+
+.linkedin svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+}
+
+/* ---------- Big cards (mentor and lead) ---------- */
+.card.big {
+    max-width: 420px;
+}
+
+.card.big .cover {
+    height: 130px;
+}
+
+.card.big .photo {
+    width: 190px;
+    height: 190px;
+    margin-top: -95px;
+}
+
+.card.big .photo span {
+    font-size: 68px;
+}
+
+.card.big h3 {
+    font-size: 24px;
+}
+
+/* gently glowing ring around the mentor's photo */
+.card[data-tone="gold"] .photo {
+    animation: glow 3s ease-in-out infinite;
+}
+
+/* ---------- Colours ---------- */
+.card[data-tone="gold"] { --tone: #f2b544; }
+.card[data-tone="blue"] { --tone: #3b82f6; }
+.card[data-tone="0"] { --tone: #f59e0b; }
+.card[data-tone="1"] { --tone: #6366f1; }
+.card[data-tone="2"] { --tone: #10b981; }
+.card[data-tone="3"] { --tone: #ef4444; }
+.card[data-tone="4"] { --tone: #a855f7; }
+.card[data-tone="5"] { --tone: #06b6d4; }
+
+/* ---------- Members: row of 3, then row of 4, each hanging from a rail ---------- */
+.members {
+    position: relative;
+    display: grid;
+    gap: 20px;
+    padding-top: 32px;
+}
+
+.row-3 {
+    grid-template-columns: repeat(3, 1fr);
+    width: calc(75% - 5px); /* so cards are the same width as in the row of 4 */
+}
+
+.row-4 {
+    grid-template-columns: repeat(4, 1fr);
+    width: 100%;
+}
+
+/* horizontal rail from the centre of the first card to the centre of the last */
+.members::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    height: 2px;
+    background: var(--accent);
+    opacity: 0.6;
+}
+
+.row-3::before {
+    left: calc(100% / 6);
+    right: calc(100% / 6);
+}
+
+.row-4::before {
+    left: 12.5%;
+    right: 12.5%;
+}
+
+.member-slot {
+    position: relative;
+    display: flex;
+}
+
+/* small line above every card that joins it to the rail */
+.member-slot::before {
+    content: "";
+    position: absolute;
+    top: -32px;
+    left: 50%;
+    width: 2px;
+    height: 32px;
+    background: var(--accent);
+    opacity: 0.6;
+}
+
+/* member cards are a bit smaller than the mentor card */
+.members .cover {
+    height: 70px;
+}
+
+.members .photo {
+    width: 100px;
+    height: 100px;
+    margin-top: -50px;
+}
+
+.members .photo span {
+    font-size: 38px;
+}
+
+.members .card h3 {
+    font-size: 18px;
+}
+
+/* the team lead card stands out a little */
+.card.lead {
+    border-color: var(--tone);
+    box-shadow: 0 16px 34px -20px var(--tone);
+}
+
+/* cards appear one after another */
+.row-3 .member-slot:nth-child(1) .card { animation-delay: 0.1s; }
+.row-3 .member-slot:nth-child(2) .card { animation-delay: 0.2s; }
+.row-3 .member-slot:nth-child(3) .card { animation-delay: 0.3s; }
+.row-4 .member-slot:nth-child(1) .card { animation-delay: 0.4s; }
+.row-4 .member-slot:nth-child(2) .card { animation-delay: 0.5s; }
+.row-4 .member-slot:nth-child(3) .card { animation-delay: 0.6s; }
+.row-4 .member-slot:nth-child(4) .card { animation-delay: 0.7s; }
+
+/* ---------- Animations ---------- */
+@keyframes rise {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+}
+
+@keyframes flow {
+    to { background-position: 0 -200%; }
+}
+
+@keyframes glow {
+    50% { box-shadow: 0 0 0 3px var(--tone), 0 0 28px 6px color-mix(in srgb, var(--tone) 55%, transparent); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .line, .card, .card[data-tone="gold"] .photo {
+        animation: none;
+    }
+}
+
+/* ---------- Smaller screens: 2 per row, then 1 per row ---------- */
+@media (max-width: 800px) {
+    .row-3,
+    .row-4 {
+        grid-template-columns: repeat(2, 1fr);
+        width: 100%;
+    }
+
+    .members::before {
+        left: 25%;
+        right: 25%;
+    }
+}
+
+@media (max-width: 480px) {
+    .row-3,
+    .row-4 {
+        grid-template-columns: 1fr;
+    }
+
+    .members::before {
+        display: none;
+    }
+}
+

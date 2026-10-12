@@ -54,13 +54,23 @@
     border-radius: 999px;
 }
 
+/* Same style as the About us heading: serif font with a gradient highlight */
 .hero h1 {
-    font-family: var(--font-display);
-    font-size: clamp(36px, 4.8vw, 62px);
-    font-weight: 500;
-    line-height: 1.04;
-    letter-spacing: -0.04em;
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: clamp(38px, 5vw, 64px);
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--text);
     animation-delay: 0.06s;
+}
+
+/* "right architect" in italic with the app colours (gold, accent, blue) */
+.hero h1 .highlight {
+    font-style: italic;
+    background: linear-gradient(90deg, #f2b544, var(--accent), #3b82f6);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
 }
 
 .hero-content > p {

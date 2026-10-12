@@ -69,7 +69,7 @@
                         <td colspan="7" class="no-results">No inquiries match your search</td>
                     </tr>
 
-                    <ng-container *ngFor="let inquiry of filteredInquiries">
+                    <ng-container *ngFor="let inquiry of pagedInquiries">
                     <tr [class.inquiry-row]="hasDetail(inquiry)">
                         <td class="nowrap">
                             <div class="named">
@@ -129,6 +129,11 @@
                                     [value]="drafts[inquiry.inquiryId!] || ''"
                                     (input)="drafts[inquiry.inquiryId!] = $any($event.target).value"
                                     (keydown.enter)="sendReply(inquiry)" />
+                                <button class="ai-write-btn" type="button" title="Let Archie draft a reply to the user"
+                                    [disabled]="writingId === inquiry.inquiryId" (click)="writeWithAi(inquiry)">
+                                    <span class="spinner" *ngIf="writingId === inquiry.inquiryId"></span>
+                                    <ng-container *ngIf="writingId !== inquiry.inquiryId">✨ AI</ng-container>
+                                </button>
                                 <button class="btn-secondary" type="button"
                                     [disabled]="!drafts[inquiry.inquiryId!]?.trim()" (click)="sendReply(inquiry)">
                                     Reply
@@ -139,6 +144,16 @@
                     </ng-container>
                 </tbody>
             </table>
+        </div>
+
+        <div class="pager" *ngIf="totalPages > 1">
+            <button class="btn-secondary" type="button" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">
+                Previous
+            </button>
+            <span class="pager-info">Page {{ currentPage }} of {{ totalPages }}</span>
+            <button class="btn-secondary" type="button" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">
+                Next
+            </button>
         </div>
     </div>
 </div>

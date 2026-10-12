@@ -2,7 +2,6 @@ package com.examly.springapp.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,8 +19,11 @@ import com.examly.springapp.service.ArchitectService;
 @RestController
 @RequestMapping("/api/architects")
 public class ArchitectController {
-    @Autowired
-    private ArchitectService architectService;
+    private final ArchitectService architectService;
+
+    public ArchitectController(ArchitectService architectService) {
+        this.architectService = architectService;
+    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

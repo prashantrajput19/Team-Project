@@ -21,6 +21,11 @@ export class FeedbackService {
     return this.http.get<Feedback[]>(this.apiUrl);
   }
 
+  // Admin only: includes deleted feedback
+  getFeedbacksIncludingDeleted(): Observable<Feedback[]> {
+    return this.http.get<Feedback[]>(`${this.apiUrl}/all`);
+  }
+
   getAllFeedbacksByUserId(userId: number): Observable<Feedback[]> {
     return this.http.get<Feedback[]>(`${this.apiUrl}/user/${userId}`);
   }

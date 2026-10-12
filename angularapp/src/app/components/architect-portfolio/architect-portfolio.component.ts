@@ -54,7 +54,7 @@ export class ArchitectPortfolioComponent implements OnInit {
     this.architectService.getAllArchitects().subscribe({
       next: (architects) => {
         this.isLoading = false;
-        this.architect = (architects || []).find(a => a.architectId === id);
+        this.architect = architects.find(a => a.architectId === id);
 
         if (this.architect) {
           this.projects = this.buildProjects(this.architect);

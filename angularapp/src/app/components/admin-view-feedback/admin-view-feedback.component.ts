@@ -18,6 +18,7 @@ export class AdminViewFeedbackComponent implements OnInit {
   search = '';
   categoryFilter = '';
   sortBy = '';
+  deletedFilter = ''; // '' = all, 'deleted', 'active' = not deleted
 
   constructor(private feedbackService: FeedbackService) { }
 
@@ -29,10 +30,10 @@ export class AdminViewFeedbackComponent implements OnInit {
     this.errorMessage = '';
     this.isLoading = true;
 
-    this.feedbackService.getFeedbacks().subscribe({
+    this.feedbackService.getFeedbacksIncludingDeleted().subscribe({
       next: (feedbacks) => {
         this.isLoading = false;
-        this.feedbacks = feedbacks || [];
+        this.feedbacks = feedbacks.sort((a, b) => b.feedbackId - a.feedbackId); // newest first
       },
       error: (error) => {
         this.isLoading = false;
@@ -42,12 +43,12 @@ export class AdminViewFeedbackComponent implements OnInit {
   }
 
   get categoryOptions(): string[] {
-    const categories = this.feedbacks.map(f => f.category).filter(c => !!c);
+    const categories = this.feedbacks.map(f => f.category);
     return Array.from(new Set(categories)).sort();
   }
 
   get hasFilters(): boolean {
-    return !!(this.search || this.categoryFilter || this.sortBy);
+    return !!(this.search || this.categoryFilter || this.sortBy || this.deletedFilter);
   }
 
   get filteredFeedbacks(): Feedback[] {
@@ -55,30 +56,58 @@ export class AdminViewFeedbackComponent implements OnInit {
 
     const list = this.feedbacks.filter(feedback =>
       (!search ||
-        (feedback.feedbackText || '').toLowerCase().includes(search) ||
+        feedback.feedbackText.toLowerCase().includes(search) ||
         this.architectName(feedback).toLowerCase().includes(search)) &&
-      (!this.categoryFilter || feedback.category === this.categoryFilter)
+      (!this.categoryFilter || feedback.category === this.categoryFilter) &&
+      (!this.deletedFilter ||
+        (this.deletedFilter === 'deleted' && feedback.deleted) ||
+        (this.deletedFilter === 'active' && !feedback.deleted))
     );
 
     if (this.sortBy === 'high') {
-      list.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
+      list.sort((a, b) => b.rating - a.rating);
     } else if (this.sortBy === 'low') {
-      list.sort((a, b) => (a.rating ?? 0) - (b.rating ?? 0));
+      list.sort((a, b) => a.rating - b.rating);
     }
     return list;
+  }
+
+  // Pagination: show 5 per page
+  page = 1;
+  pageSize = 5;
+
+  get totalPages(): number {
+    return Math.max(1, Math.ceil(this.filteredFeedbacks.length / this.pageSize));
+  }
+
+  // If filters make the list shorter, never stay on a page that no longer exists
+  get currentPage(): number {
+    return Math.min(this.page, this.totalPages);
+  }
+
+  get pagedFeedbacks(): Feedback[] {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.filteredFeedbacks.slice(start, start + this.pageSize);
+  }
+
+  // Change page and jump back to the top of the page
+  goToPage(page: number): void {
+    this.page = page;
+    window.scrollTo(0, 0);
   }
 
   clearFilters(): void {
     this.search = '';
     this.categoryFilter = '';
     this.sortBy = '';
+    this.deletedFilter = '';
   }
 
   architectName(feedback: Feedback): string {
-    return feedback.architect?.name ?? '';
+    return feedback.architect.name;
   }
 
   userName(feedback: Feedback): string {
-    return feedback.user?.username ?? '';
+    return feedback.user.username;
   }
 }

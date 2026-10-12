@@ -67,7 +67,7 @@
                         <td colspan="6" class="no-results">No inquiries match your search</td>
                     </tr>
 
-                    <ng-container *ngFor="let inquiry of filteredInquiries">
+                    <ng-container *ngFor="let inquiry of pagedInquiries">
                     <tr class="inquiry-row">
                         <td class="nowrap">
                             <div class="named">
@@ -132,6 +132,11 @@
                                     [value]="drafts[inquiry.inquiryId!] || ''"
                                     (input)="drafts[inquiry.inquiryId!] = $any($event.target).value"
                                     (keydown.enter)="sendSubInquiry(inquiry)" />
+                                <button class="ai-write-btn" type="button" title="Let Archie write a follow-up question"
+                                    [disabled]="writingId === inquiry.inquiryId" (click)="writeWithAi(inquiry)">
+                                    <span class="spinner" *ngIf="writingId === inquiry.inquiryId"></span>
+                                    <ng-container *ngIf="writingId !== inquiry.inquiryId">✨ AI</ng-container>
+                                </button>
                                 <button class="btn-secondary" type="button"
                                     [disabled]="!drafts[inquiry.inquiryId!]?.trim()"
                                     (click)="sendSubInquiry(inquiry)">
@@ -159,6 +164,16 @@
                     </ng-container>
                 </tbody>
             </table>
+        </div>
+
+        <div class="pager" *ngIf="totalPages > 1">
+            <button class="btn-secondary" type="button" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">
+                Previous
+            </button>
+            <span class="pager-info">Page {{ currentPage }} of {{ totalPages }}</span>
+            <button class="btn-secondary" type="button" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">
+                Next
+            </button>
         </div>
     </div>
 </div>

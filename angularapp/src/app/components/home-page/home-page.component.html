@@ -5,7 +5,7 @@
         <span class="eyebrow" *ngIf="username">Welcome back, {{ username }}</span>
 
         <h1>
-            The right architect,<br class="wide-only" />
+            The <span class="highlight">right architect</span>,<br class="wide-only" />
             for the thing you're building
         </h1>
 
@@ -19,7 +19,6 @@
                 <span class="hero-btn-icon">
                     <svg class="icon" viewBox="0 0 24 24">
                         <path d="M3 21h18" />
-                        <path d="M5 21V8l7-5 7 5v13" />
                         <path d="M10 21v-6h4v6" />
                     </svg>
                 </span>
@@ -77,7 +76,7 @@
                     <small>{{ top.expertise }} · {{ top.location }}</small>
                 </span>
                 <span class="rating" *ngIf="top.rating"><span class="star">&#9733;</span>{{ top.rating | number: "1.1-1" }}</span>
-                <span class="rating" *ngIf="!top.rating">New</span>
+                <span class="rating" *ngIf="!top.rating">&#10024; Rising Star</span>
             </a>
         </div>
     </div>

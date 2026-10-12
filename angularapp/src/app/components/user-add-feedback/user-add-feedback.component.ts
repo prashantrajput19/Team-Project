@@ -6,6 +6,7 @@ import { Feedback } from '../../models/feedback.model';
 import { ArchitectService } from '../../services/architect.service';
 import { FeedbackService } from '../../services/feedback.service';
 import { AuthService } from '../../services/auth.service';
+import { AiService } from '../../services/ai.service';
 import { describeError } from '../../error-message';
 
 @Component({
@@ -15,6 +16,7 @@ import { describeError } from '../../error-message';
 })
 export class UserAddFeedbackComponent implements OnInit {
   architectId = 0;
+  inquiryId = 0;
   architect?: Architect;
 
   // Form fields
@@ -30,6 +32,7 @@ export class UserAddFeedbackComponent implements OnInit {
 
   isLoading = false;
   isSaving = false;
+  isWriting = false; // true while Archie (AI) is writing
   errorMessage = '';
 
   // Success / error popup
@@ -39,6 +42,7 @@ export class UserAddFeedbackComponent implements OnInit {
     private architectService: ArchitectService,
     private feedbackService: FeedbackService,
     private authService: AuthService,
+    private aiService: AiService,
     private route: ActivatedRoute,
     private router: Router
   ) { }
@@ -50,6 +54,7 @@ export class UserAddFeedbackComponent implements OnInit {
   ngOnInit(): void {
     // The architect is passed in the URL: /user/feedback/add?architectId=5
     this.architectId = Number(this.route.snapshot.queryParamMap.get('architectId'));
+    this.inquiryId = Number(this.route.snapshot.queryParamMap.get('inquiryId'));
 
     if (!this.architectId) {
       this.router.navigate(['/user/inquiries']);
@@ -65,7 +70,7 @@ export class UserAddFeedbackComponent implements OnInit {
     this.architectService.getAllArchitects().subscribe({
       next: (architects) => {
         this.isLoading = false;
-        this.architect = (architects || []).find(a => a.architectId === this.architectId);
+        this.architect = architects.find(a => a.architectId === this.architectId);
 
         if (!this.architect) {
           this.errorMessage = 'Architect not found';
@@ -78,13 +83,30 @@ export class UserAddFeedbackComponent implements OnInit {
     });
   }
 
+  // Archie (AI) writes the feedback from the stars, category and whatever the user typed
+  writeWithAi(): void {
+    this.isWriting = true;
+
+    this.aiService.write({
+      type: 'feedback',
+      notes: this.feedbackText,
+      architectId: this.architectId,
+      rating: this.rating,
+      category: this.category
+    }).subscribe({
+      next: (response) => {
+        this.isWriting = false;
+        this.feedbackText = response.text;
+      },
+      error: (error) => {
+        this.isWriting = false;
+        this.showAlert('error', 'Archie', describeError(error, 'Archie could not write it. Please try again.'));
+      }
+    });
+  }
+
   save(): void {
     const userId = this.authService.getUserId();
-
-    if (!userId) {
-      this.showAlert('error', 'Failed', 'Please login again to submit feedback.');
-      return;
-    }
 
     const feedback: Feedback = {
       feedbackText: this.feedbackText,
@@ -92,7 +114,8 @@ export class UserAddFeedbackComponent implements OnInit {
       category: this.category,
       rating: this.rating,
       user: { userId },
-      architect: { architectId: this.architectId }
+      architect: { architectId: this.architectId },
+      inquiryId: this.inquiryId
     };
 
     this.isSaving = true;

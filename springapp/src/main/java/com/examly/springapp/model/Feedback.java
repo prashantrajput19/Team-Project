@@ -1,7 +1,5 @@
 package com.examly.springapp.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -31,7 +29,9 @@ public class Feedback {
 
     private Integer rating;
 
-    @JsonIgnore
+    // The inquiry this feedback was given for (one feedback per inquiry)
+    private Long inquiryId;
+
     private boolean deleted = false;
 
     public Feedback() {
@@ -105,6 +105,14 @@ public class Feedback {
 
     public boolean isDeleted() {
         return deleted;
+    }
+
+    public Long getInquiryId() {
+        return inquiryId;
+    }
+
+    public void setInquiryId(Long inquiryId) {
+        this.inquiryId = inquiryId;
     }
 
     public void setDeleted(boolean deleted) {

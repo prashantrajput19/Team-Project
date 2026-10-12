@@ -38,19 +38,13 @@ export class UserViewFeedbackComponent implements OnInit {
 
   loadFeedbacks(): void {
     const userId = this.authService.getUserId();
-
-    if (!userId) {
-      this.errorMessage = 'Please login again to see your feedback';
-      return;
-    }
-
     this.errorMessage = '';
     this.isLoading = true;
 
     this.feedbackService.getAllFeedbacksByUserId(userId).subscribe({
       next: (feedbacks) => {
         this.isLoading = false;
-        this.feedbacks = feedbacks || [];
+        this.feedbacks = feedbacks.sort((a, b) => b.feedbackId - a.feedbackId); // newest first
       },
       error: (error) => {
         this.isLoading = false;
@@ -60,7 +54,7 @@ export class UserViewFeedbackComponent implements OnInit {
   }
 
   get categoryOptions(): string[] {
-    const categories = this.feedbacks.map(f => f.category).filter(c => !!c);
+    const categories = this.feedbacks.map(f => f.category);
     return Array.from(new Set(categories)).sort();
   }
 
@@ -73,10 +67,34 @@ export class UserViewFeedbackComponent implements OnInit {
 
     return this.feedbacks.filter(feedback =>
       (!search ||
-        (feedback.feedbackText || '').toLowerCase().includes(search) ||
+        feedback.feedbackText.toLowerCase().includes(search) ||
         this.architectName(feedback).toLowerCase().includes(search)) &&
       (!this.categoryFilter || feedback.category === this.categoryFilter)
     );
+  }
+
+  // Pagination: show 5 per page
+  page = 1;
+  pageSize = 5;
+
+  get totalPages(): number {
+    return Math.max(1, Math.ceil(this.filteredFeedbacks.length / this.pageSize));
+  }
+
+  // If filters make the list shorter, never stay on a page that no longer exists
+  get currentPage(): number {
+    return Math.min(this.page, this.totalPages);
+  }
+
+  get pagedFeedbacks(): Feedback[] {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.filteredFeedbacks.slice(start, start + this.pageSize);
+  }
+
+  // Change page and jump back to the top of the page
+  goToPage(page: number): void {
+    this.page = page;
+    window.scrollTo(0, 0);
   }
 
   clearFilters(): void {
@@ -85,7 +103,7 @@ export class UserViewFeedbackComponent implements OnInit {
   }
 
   architectName(feedback: Feedback): string {
-    return feedback.architect?.name ?? '';
+    return feedback.architect.name;
   }
 
   // Opens the delete popup.
@@ -95,12 +113,7 @@ export class UserViewFeedbackComponent implements OnInit {
   }
 
   confirmDelete(): void {
-    const feedbackId = this.feedbackToDelete?.feedbackId;
-
-    if (feedbackId === undefined) {
-      return;
-    }
-
+    const feedbackId = this.feedbackToDelete.feedbackId;
     this.isDeleting = true;
 
     this.feedbackService.deleteFeedback(feedbackId).subscribe({

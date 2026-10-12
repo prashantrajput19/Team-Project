@@ -34,7 +34,8 @@ export class LoginComponent {
     this.isLoading = true;
 
     this.authService.login(this.loginData).subscribe({
-      next: () => {
+      next: (response) => {
+        this.authService.saveLogin(response);
         this.isLoading = false;
 
         if (this.authService.isAdmin()) {

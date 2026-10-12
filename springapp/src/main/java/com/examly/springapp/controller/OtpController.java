@@ -1,6 +1,5 @@
 package com.examly.springapp.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,8 +15,11 @@ import com.examly.springapp.service.OtpService;
 @RestController
 @RequestMapping("/api/otp")
 public class OtpController {
-    @Autowired
-    private OtpService otpService;
+    private final OtpService otpService;
+
+    public OtpController(OtpService otpService) {
+        this.otpService = otpService;
+    }
 
     @PostMapping("/send")
     public OtpSentResponse send(@RequestBody OtpSendRequest request) {

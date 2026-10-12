@@ -1,0 +1,370 @@
+/* ---------- Floating button ---------- */
+.ai-fab {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 150;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 52px;
+    padding: 0 20px 0 16px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1a1a1a;
+    background: var(--accent);
+    border: none;
+    border-radius: 999px;
+    box-shadow: 0 10px 28px -8px rgba(0, 0, 0, 0.5), 0 0 0 4px var(--accent-soft);
+    cursor: pointer;
+    transition: transform 0.15s;
+}
+
+.ai-fab:hover {
+    transform: translateY(-2px);
+}
+
+.ai-fab.open {
+    width: 52px;
+    padding: 0;
+    justify-content: center;
+}
+
+.ai-logo {
+    width: 22px;
+    height: 22px;
+}
+
+.ai-logo .spark {
+    fill: currentColor;
+    stroke-width: 1;
+}
+
+/* ---------- Chat dialog ---------- */
+.ai-panel {
+    position: fixed;
+    right: 20px;
+    bottom: 84px;
+    z-index: 150;
+    display: flex;
+    flex-direction: column;
+    width: min(400px, calc(100vw - 32px));
+    height: min(600px, calc(100vh - 120px));
+    overflow: hidden;
+    background: var(--modal-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    animation: pop-in 0.2s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.ai-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 12px 12px 16px;
+    border-bottom: 1px solid var(--card-border);
+}
+
+.ai-badge {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    color: #1a1a1a;
+    background: var(--accent);
+    border-radius: 12px;
+}
+
+.ai-title {
+    flex: 1;
+    min-width: 0;
+}
+
+.ai-title strong {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-display);
+    font-size: 16px;
+}
+
+.ai-title > span {
+    font-size: 12px;
+    color: var(--text-soft);
+}
+
+.ai-tag {
+    padding: 1px 7px;
+    font-family: var(--font-sans);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--accent-text);
+    background: var(--accent-soft);
+    border-radius: 999px;
+}
+
+.ai-icon-btn {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.ai-icon-btn:hover {
+    color: var(--text);
+    background: var(--input-bg);
+}
+
+.ai-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 16px;
+    overflow-y: auto;
+}
+
+/* ---------- Messages ---------- */
+.bubble {
+    max-width: 88%;
+    padding: 10px 13px;
+    font-size: 14px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    border-radius: 14px;
+}
+
+.bubble.assistant {
+    align-self: flex-start;
+    color: var(--text);
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-bottom-left-radius: 4px;
+}
+
+.bubble.user {
+    align-self: flex-end;
+    color: var(--btn-text);
+    background: var(--btn-bg);
+    border-bottom-right-radius: 4px;
+}
+
+.bubble.error {
+    color: var(--danger);
+    background: var(--danger-soft);
+    border-color: transparent;
+}
+
+.typing {
+    display: inline-flex;
+    gap: 4px;
+}
+
+.typing span {
+    width: 7px;
+    height: 7px;
+    background: var(--text-soft);
+    border-radius: 50%;
+    animation: blink 1.2s infinite both;
+}
+
+.typing span:nth-child(2) { animation-delay: 0.2s; }
+.typing span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes blink {
+    0%, 80%, 100% { opacity: 0.25; }
+    40% { opacity: 1; }
+}
+
+.ai-setup {
+    padding: 12px;
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--warning);
+    background: var(--warning-soft);
+    border-radius: 12px;
+}
+
+.ai-setup strong {
+    display: block;
+}
+
+/* ---------- Suggested questions ---------- */
+.ai-prompts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.ai-chip {
+    padding: 7px 12px;
+    font-size: 13px;
+    text-align: left;
+    color: var(--text);
+    background: var(--accent-soft);
+    border: 1px solid transparent;
+    border-radius: 999px;
+    cursor: pointer;
+}
+
+.ai-chip:hover {
+    border-color: var(--accent);
+}
+
+/* ---------- Draft card (inquiry / follow-up / feedback / reply) ---------- */
+.ai-draft {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px;
+    background: var(--input-bg);
+    border: 1px solid var(--accent);
+    border-radius: 14px;
+}
+
+.ai-draft.sent {
+    border-color: var(--success);
+}
+
+.ai-draft-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+}
+
+.ai-draft-kind {
+    padding: 2px 9px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #1a1a1a;
+    background: var(--accent);
+    border-radius: 999px;
+}
+
+.ai-draft .textarea {
+    min-height: 90px;
+    font-size: 14px;
+}
+
+.ai-stars {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    font-size: 13px;
+    color: var(--text-soft);
+}
+
+.ai-stars button {
+    font-size: 22px;
+    line-height: 1;
+    color: var(--input-border);
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.ai-stars button.on {
+    color: var(--star);
+}
+
+.ai-draft-row {
+    display: flex;
+    gap: 8px;
+}
+
+.ai-draft-row label {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 4px;
+    margin: 0;
+    font-size: 12px;
+    color: var(--text-soft);
+}
+
+.ai-draft-row .input,
+.ai-draft-row .select {
+    padding: 8px 10px;
+    font-size: 13px;
+}
+
+.ai-draft-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.ai-draft-done {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--success);
+}
+
+.ai-link {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.ai-link:hover {
+    text-decoration: underline;
+}
+
+/* ---------- Input box ---------- */
+.ai-input {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    padding: 12px;
+    border-top: 1px solid var(--card-border);
+}
+
+.ai-input .textarea {
+    min-height: 44px;
+    max-height: 120px;
+    resize: none;
+}
+
+.ai-input .btn {
+    height: 44px;
+    padding: 0 14px;
+}
+
+/* ---------- Phones ---------- */
+@media (max-width: 640px) {
+    .ai-fab {
+        right: 14px;
+        bottom: 14px;
+        width: 52px;
+        padding: 0;
+        justify-content: center;
+    }
+
+    .ai-fab-label {
+        display: none;
+    }
+
+    .ai-panel {
+        right: 8px;
+        bottom: 76px;
+        left: 8px;
+        width: auto;
+        height: calc(100vh - 100px);
+    }
+}

@@ -1,18 +1,14 @@
 <svg class="hero-ill" viewBox="0 0 640 560" role="img"
-    aria-label="A blueprint turning into a finished modern home at sunset, marked with a location pin, with a five-star architect profile and an answered inquiry">
+    aria-label="A modern home at sunset marked with a location pin, a five star architect card and an answered inquiry">
     <defs>
         <linearGradient id="hzSky" x1="0" y1="0" x2="0" y2="1">
             <stop class="sky1" offset="0"/>
-            <stop class="sky2" offset="0.62"/>
+            <stop class="sky2" offset="0.6"/>
             <stop class="sky3" offset="1"/>
         </linearGradient>
-        <linearGradient id="hzGlow" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id="hzWindow" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0" stop-color="#ffe2a6"/>
             <stop offset="1" stop-color="#f2a93b"/>
-        </linearGradient>
-        <linearGradient id="hzPool" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0" stop-color="#3fb8d9"/>
-            <stop offset="1" stop-color="#2a86c9"/>
         </linearGradient>
         <radialGradient id="hzSun">
             <stop offset="0" stop-color="#ffd27a"/>
@@ -21,138 +17,105 @@
         <clipPath id="hzFrame">
             <rect width="640" height="560" rx="32"/>
         </clipPath>
-        <clipPath id="hzDraft">
-            <rect x="156" y="186" width="136" height="262" rx="4"/>
-        </clipPath>
     </defs>
 
     <g clip-path="url(#hzFrame)">
+        <!-- Sky, sun and clouds -->
         <rect width="640" height="560" fill="url(#hzSky)"/>
-
-        <circle class="halo" cx="520" cy="150" r="92"/>
-        <circle class="halo" cx="520" cy="150" r="62"/>
-        <circle cx="520" cy="150" r="40" fill="url(#hzSun)"/>
+        <circle class="halo pulse" cx="480" cy="170" r="96"/>
+        <circle class="halo" cx="480" cy="170" r="64"/>
+        <circle cx="480" cy="170" r="42" fill="url(#hzSun)"/>
 
         <g class="cloud drift-a">
-            <ellipse cx="118" cy="104" rx="46" ry="15"/>
-            <ellipse cx="96" cy="94" rx="22" ry="15"/>
-            <ellipse cx="128" cy="88" rx="26" ry="19"/>
+            <ellipse cx="130" cy="110" rx="48" ry="15"/>
+            <ellipse cx="108" cy="99" rx="22" ry="15"/>
+            <ellipse cx="140" cy="94" rx="26" ry="19"/>
         </g>
         <g class="cloud drift-b">
-            <ellipse cx="396" cy="66" rx="34" ry="11"/>
-            <ellipse cx="408" cy="57" rx="20" ry="13"/>
+            <ellipse cx="360" cy="70" rx="36" ry="11"/>
+            <ellipse cx="372" cy="61" rx="20" ry="13"/>
         </g>
 
+        <!-- City far away -->
         <g class="skyline">
-            <rect x="18" y="262" width="34" height="90"/>
-            <rect x="56" y="236" width="26" height="116"/>
-            <rect x="86" y="284" width="40" height="68"/>
-            <rect x="436" y="250" width="30" height="102"/>
-            <rect x="470" y="276" width="44" height="76"/>
-            <rect x="518" y="228" width="24" height="124"/>
-            <rect x="546" y="268" width="38" height="84"/>
-            <rect x="588" y="244" width="34" height="108"/>
+            <rect x="10" y="270" width="36" height="110"/>
+            <rect x="50" y="240" width="28" height="140"/>
+            <rect x="82" y="290" width="44" height="90"/>
+            <rect x="500" y="256" width="32" height="124"/>
+            <rect x="536" y="228" width="40" height="152"/>
+            <rect x="580" y="282" width="50" height="98"/>
         </g>
 
-        <path class="hill" d="M0 352 C 120 322, 220 338, 320 340 S 540 318, 640 344 V 560 H 0 Z"/>
-        <path class="lawn" d="M0 410 C 160 396, 480 396, 640 412 V 560 H 0 Z"/>
+        <!-- Hills and lawn -->
+        <path class="hill" d="M0 380 Q160 330 320 370 T640 360 V560 H0 Z"/>
+        <path class="lawn" d="M0 420 Q320 390 640 420 V560 H0 Z"/>
+        <ellipse class="shadow" cx="330" cy="430" rx="190" ry="16"/>
 
-        <rect class="deck" x="96" y="400" width="456" height="12" rx="3"/>
+        <!-- Modern two storey house -->
+        <rect class="upper" x="250" y="236" width="200" height="86"/>
+        <rect class="slab" x="236" y="226" width="228" height="12"/>
+        <rect class="wall" x="180" y="320" width="300" height="104"/>
+        <rect class="slab" x="168" y="312" width="324" height="12"/>
+        <rect x="268" y="252" width="70" height="52" rx="3" fill="url(#hzWindow)" class="lit"/>
+        <rect x="354" y="252" width="80" height="52" rx="3" fill="url(#hzWindow)" class="lit lit-b"/>
+        <path class="mullion" d="M303 252v52M394 252v52"/>
+        <rect x="198" y="342" width="96" height="60" rx="3" fill="url(#hzWindow)" class="lit lit-b"/>
+        <path class="mullion" d="M230 342v60M262 342v60"/>
+        <rect class="wood" x="390" y="332" width="74" height="92"/>
+        <path class="slat" d="M400 332v92M412 332v92M424 332v92M436 332v92M448 332v92"/>
+        <rect class="door" x="316" y="350" width="44" height="74" rx="3"/>
+        <circle class="knob" cx="352" cy="388" r="3"/>
+        <path class="path" d="M316 424 L300 470 H376 L360 424 Z"/>
 
-        <rect class="wall" x="170" y="300" width="300" height="100"/>
-        <rect class="lit" x="190" y="318" width="150" height="72" rx="2" fill="url(#hzGlow)"/>
-        <line class="mullion" x1="240" y1="318" x2="240" y2="390"/>
-        <line class="mullion" x1="290" y1="318" x2="290" y2="390"/>
-        <line class="mullion" x1="190" y1="352" x2="340" y2="352"/>
-        <rect class="door" x="364" y="328" width="36" height="62" rx="2"/>
-        <circle class="knob" cx="392" cy="360" r="2.4"/>
-        <rect class="pot" x="412" y="376" width="16" height="14" rx="2"/>
-        <circle class="bush" cx="420" cy="368" r="11"/>
+        <!-- Trees -->
+        <rect class="trunk" x="122" y="372" width="8" height="52"/>
+        <circle class="tree" cx="126" cy="356" r="32"/>
+        <circle class="tree-l" cx="114" cy="344" r="15"/>
+        <rect class="trunk" x="526" y="384" width="7" height="40"/>
+        <ellipse class="cypress" cx="530" cy="350" rx="18" ry="44"/>
+        <circle class="bush" cx="186" cy="428" r="16"/>
+        <circle class="bush" cx="478" cy="430" r="14"/>
+    </g>
 
-        <rect class="upper" x="230" y="220" width="270" height="80"/>
-        <rect class="lit lit-b" x="250" y="236" width="120" height="50" rx="2" fill="url(#hzGlow)"/>
-        <line class="mullion" x1="290" y1="236" x2="290" y2="286"/>
-        <line class="mullion" x1="330" y1="236" x2="330" y2="286"/>
-        <rect class="wood" x="384" y="232" width="102" height="58" rx="2"/>
-        <path class="slat" d="M394 232v58M406 232v58M418 232v58M430 232v58M442 232v58M454 232v58M466 232v58M478 232v58"/>
-        <rect class="slab" x="218" y="208" width="294" height="13" rx="2"/>
-        <rect class="slab" x="160" y="294" width="322" height="8" rx="2"/>
-        <rect class="pillar" x="488" y="302" width="7" height="98"/>
-
-        <polygon class="panel" points="262,207 312,207 322,190 272,190"/>
-        <polygon class="panel" points="328,207 378,207 388,190 338,190"/>
-        <polygon class="panel" points="394,207 444,207 454,190 404,190"/>
-        <path class="panel-line" d="M267 198.5h50M333 198.5h50M399 198.5h50"/>
-
-        <rect x="120" y="420" width="250" height="26" rx="8" fill="url(#hzPool)"/>
-        <path class="ripple" d="M138 431 q 10 -5 20 0 t 20 0M226 437 q 10 -5 20 0 t 20 0M306 429 q 9 -4 18 0 t 18 0"/>
-
-        <path class="stone" d="M430 420 h 34 l 6 10 h -34 z"/>
-        <path class="stone" d="M444 444 h 36 l 7 11 h -36 z"/>
-        <path class="stone" d="M460 470 h 38 l 8 12 h -38 z"/>
-
-        <ellipse class="shadow" cx="138" cy="402" rx="18" ry="4"/>
-        <rect class="trunk" x="136" y="372" width="4" height="30" rx="2"/>
-        <ellipse class="cypress" cx="138" cy="338" rx="16" ry="46"/>
-        <ellipse class="cypress-l" cx="133" cy="330" rx="7" ry="34"/>
-
-        <ellipse class="shadow" cx="560" cy="404" rx="30" ry="5"/>
-        <rect class="trunk" x="557" y="360" width="6" height="44" rx="3"/>
-        <circle class="tree" cx="560" cy="342" r="34"/>
-        <circle class="tree-l" cx="548" cy="330" r="16"/>
-
-        <circle class="bush" cx="104" cy="402" r="13"/>
-        <circle class="bush-l" cx="122" cy="406" r="9"/>
-        <circle class="bush" cx="526" cy="404" r="12"/>
-
-        <g clip-path="url(#hzDraft)">
-            <rect class="draft" x="156" y="186" width="136" height="262"/>
-            <path class="draft-grid" d="M140 170v262M160 170v262M180 170v262M200 170v262M220 170v262M240 170v262M260 170v262M280 170v262M120 190h172M120 210h172M120 230h172M120 250h172M120 270h172M120 290h172M120 310h172M120 330h172M120 350h172M120 370h172M120 390h172M120 410h172M120 430h172"/>
-            <path class="draft-line" d="M170 400V300H300M170 400H300M160 294H300M160 302H300M230 300V220H300M218 208H300M218 221H300M218 208V221"/>
-            <path class="draft-line" d="M190 318H300M190 390H300M190 318V390M240 318V390M190 352H300"/>
-            <path class="draft-line" d="M250 236H300M250 286H300M250 236V286M290 236V286"/>
-            <path class="draft-line" d="M262 207L272 190H300M120 420H300M120 446H300"/>
-            <path class="draft-dim" d="M170 414H300M170 409V419M230 192V210M224 192H236"/>
-            <circle class="draft-node" cx="170" cy="300" r="3"/>
-            <circle class="draft-node" cx="230" cy="220" r="3"/>
-            <circle class="draft-node" cx="170" cy="400" r="3"/>
-        </g>
-        <line class="seam" x1="292" y1="186" x2="292" y2="448"/>
-
-        <g class="pencil">
-            <polygon class="pencil-body" points="300,150 316,134 352,170 336,186"/>
-            <polygon class="pencil-cap" points="352,170 336,186 344,194 360,178"/>
-            <polygon class="pencil-wood" points="300,150 336,186 292,170"/>
-            <polygon class="pencil-tip" points="292,170 300,166 298,172"/>
-        </g>
-
-        <g class="pin">
-            <ellipse class="pin-shadow" cx="430" cy="214" rx="12" ry="3.5"/>
-            <path class="pin-body" d="M430 210 C 420 192, 404 180, 404 162 a 26 26 0 0 1 52 0 C 456 180, 440 192, 430 210 Z"/>
-            <circle class="pin-dot" cx="430" cy="162" r="10"/>
+    <!-- Location pin bouncing above the house -->
+    <g class="pin">
+        <ellipse class="pin-shadow" cx="350" cy="214" rx="14" ry="4"/>
+        <g class="pin-bounce">
+            <path class="pin-body" d="M350 210 C 332 186 324 172 324 160 a26 26 0 0 1 52 0 c0 12 -8 26 -26 50 z"/>
+            <circle class="pin-dot" cx="350" cy="160" r="10"/>
         </g>
     </g>
 
+    <!-- Architect card with 5 stars -->
     <g class="float-a">
-        <rect class="card" x="24" y="30" width="206" height="76" rx="18"/>
-        <circle class="av" cx="62" cy="68" r="20"/>
-        <circle class="av-person" cx="62" cy="62" r="7"/>
-        <path class="av-person" d="M50 82 a 12 10 0 0 1 24 0 z"/>
-        <rect class="bar" x="94" y="52" width="92" height="9" rx="4.5"/>
-        <polygon class="st" points="100,71 102.1,75.6 107,76.1 103.3,79.4 104.4,84.3 100,81.8 95.6,84.3 96.7,79.4 93,76.1 97.9,75.6"/>
-        <polygon class="st" points="117,71 119.1,75.6 124,76.1 120.3,79.4 121.4,84.3 117,81.8 112.6,84.3 113.7,79.4 110,76.1 114.9,75.6"/>
-        <polygon class="st" points="134,71 136.1,75.6 141,76.1 137.3,79.4 138.4,84.3 134,81.8 129.6,84.3 130.7,79.4 127,76.1 131.9,75.6"/>
-        <polygon class="st" points="151,71 153.1,75.6 158,76.1 154.3,79.4 155.4,84.3 151,81.8 146.6,84.3 147.7,79.4 144,76.1 148.9,75.6"/>
-        <polygon class="st" points="168,71 170.1,75.6 175,76.1 171.3,79.4 172.4,84.3 168,81.8 163.6,84.3 164.7,79.4 161,76.1 165.9,75.6"/>
-        <circle class="ok" cx="206" cy="40" r="11"/>
-        <path class="ok-t" d="M201 40 l3.5 3.5 l6 -7"/>
+        <rect class="card" x="28" y="160" width="196" height="76" rx="18"/>
+        <circle class="av" cx="64" cy="198" r="20"/>
+        <path class="av-person" d="M64 190 a6 6 0 1 0 0.1 0 M52 210 a12 9 0 0 1 24 0"/>
+        <rect class="bar strong" x="94" y="180" width="100" height="10" rx="5"/>
+        <g class="st">
+            <path d="M100 202 l3 6 6.5 1 -4.7 4.6 1.1 6.4 -5.9 -3.1 -5.9 3.1 1.1 -6.4 -4.7 -4.6 6.5 -1z"/>
+            <path d="M120 202 l3 6 6.5 1 -4.7 4.6 1.1 6.4 -5.9 -3.1 -5.9 3.1 1.1 -6.4 -4.7 -4.6 6.5 -1z"/>
+            <path d="M140 202 l3 6 6.5 1 -4.7 4.6 1.1 6.4 -5.9 -3.1 -5.9 3.1 1.1 -6.4 -4.7 -4.6 6.5 -1z"/>
+            <path d="M160 202 l3 6 6.5 1 -4.7 4.6 1.1 6.4 -5.9 -3.1 -5.9 3.1 1.1 -6.4 -4.7 -4.6 6.5 -1z"/>
+            <path d="M180 202 l3 6 6.5 1 -4.7 4.6 1.1 6.4 -5.9 -3.1 -5.9 3.1 1.1 -6.4 -4.7 -4.6 6.5 -1z"/>
+        </g>
     </g>
 
+    <!-- Dashed line from the card to the house -->
+    <path class="flow" d="M224 210 C 270 210 290 200 322 168"/>
+
+    <!-- Inquiry replied bubble -->
     <g class="float-b">
-        <path class="card" d="M418 474 h 176 a 18 18 0 0 1 18 18 v 22 a 18 18 0 0 1 -18 18 h -150 l -14 12 v -12 h -12 a 18 18 0 0 1 -18 -18 v -22 a 18 18 0 0 1 18 -18 z"/>
-        <circle class="ok" cx="434" cy="503" r="14"/>
-        <path class="ok-t" d="M427.5 503 l4.5 4.5 l8 -9"/>
-        <rect class="bar" x="460" y="492" width="118" height="8" rx="4"/>
-        <rect class="bar soft" x="460" y="507" width="78" height="8" rx="4"/>
+        <rect class="card" x="404" y="458" width="208" height="70" rx="18"/>
+        <path class="card" d="M430 528 l-10 16 l26 -16 z"/>
+        <rect class="bar strong" x="424" y="476" width="120" height="10" rx="5"/>
+        <rect class="bar" x="424" y="496" width="150" height="8" rx="4"/>
+        <rect class="bar" x="424" y="510" width="96" height="8" rx="4"/>
+        <circle class="ok" cx="584" cy="482" r="13"/>
+        <path class="ok-t" d="M578 482 l4 4 l7 -8"/>
     </g>
+
+    <!-- Sparkles -->
+    <g class="spark s1"><path d="M260 60 v18 M251 69 h18"/></g>
+    <g class="spark s2"><path d="M600 120 v12 M594 126 h12"/></g>
 </svg>

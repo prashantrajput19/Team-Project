@@ -61,7 +61,7 @@
 
         <div class="cards" *ngIf="filteredArchitects.length > 0">
 
-            <article class="arch-card" *ngFor="let architect of filteredArchitects">
+            <article class="arch-card" *ngFor="let architect of pagedArchitects">
 
                 <header class="arch-head">
 
@@ -98,10 +98,10 @@
                         <dt>Rating</dt>
                         <dd>
                             <span class="rating" *ngIf="architect.rating">
-                                ★ {{ architect.rating }}
+                                <span class="star">&#9733;</span> {{ architect.rating }}
                             </span>
                             <span class="rating" *ngIf="!architect.rating">
-                                New (no ratings yet)
+                                &#10024; Rising Star
                             </span>
                         </dd>
                     </div>
@@ -131,6 +131,16 @@
 
             </article>
 
+        </div>
+
+        <div class="pager" *ngIf="totalPages > 1">
+            <button class="btn-secondary" type="button" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">
+                Previous
+            </button>
+            <span class="pager-info">Page {{ currentPage }} of {{ totalPages }}</span>
+            <button class="btn-secondary" type="button" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">
+                Next
+            </button>
         </div>
 
     </div>

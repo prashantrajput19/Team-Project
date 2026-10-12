@@ -11,6 +11,8 @@ public interface FeedbackService {
 
     List<Feedback> getAllFeedback();
 
+    List<Feedback> getAllFeedbackIncludingDeleted();
+
     List<Feedback> getFeedbackByUserId(Long userId);
 
     void deleteFeedback(Long feedbackId);

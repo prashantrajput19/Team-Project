@@ -2,7 +2,6 @@ package com.examly.springapp.controller;
 
 import java.security.Principal;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,11 +21,16 @@ import com.examly.springapp.service.UserService;
 @RestController
 @RequestMapping("/api")
 public class AuthController {
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    private JwtUtils jwtUtils;
+    private final JwtUtils jwtUtils;
+
+    public AuthController(
+        UserService userService,
+        JwtUtils jwtUtils) {
+        this.userService = userService;
+        this.jwtUtils = jwtUtils;
+    }
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
@@ -37,14 +41,8 @@ public class AuthController {
     @PostMapping("/login")
     public LoginDTO login(@RequestBody User loginRequest) {
         User user = userService.loginUser(loginRequest);
-
-        LoginDTO dto = new LoginDTO();
-        dto.setToken(jwtUtils.generateToken(user.getEmail()));
-        dto.setUsername(user.getUsername());
-        dto.setUserRole(user.getUserRole());
-        dto.setUserId(user.getUserId());
-
-        return dto;
+        String token = jwtUtils.generateToken(user.getEmail());
+        return new LoginDTO(token, user.getUsername(), user.getUserRole(), user.getUserId());
     }
 
     @GetMapping("/me")

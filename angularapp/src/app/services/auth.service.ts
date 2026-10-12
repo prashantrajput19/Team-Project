@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, catchError, of, tap } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { User } from '../models/user.model';
 import { Login } from '../models/login.model';
@@ -31,34 +31,39 @@ export class AuthService {
   }
 
   login(login: Login): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/login`, login).pipe(
-      tap(response => {
-        if (response?.token) {
-          localStorage.clear();
-          localStorage.setItem('token', response.token);
-          this.currentUser = {
-            userId: response.userId,
-            username: response.username,
-            userRole: response.userRole
-          };
-        }
-      })
-    );
+    return this.http.post<any>(`${this.apiUrl}/login`, login);
+  }
+
+  // Called by the login page after a successful login.
+  saveLogin(response: any): void {
+    localStorage.setItem('token', response.token);
+    this.currentUser = {
+      userId: response.userId,
+      username: response.username,
+      userRole: response.userRole
+    };
   }
 
   // Called once when the app starts (see app.module.ts).
-  restoreSession(): Observable<Partial<User> | null> {
-    if (!this.getToken()) {
-      return of(null);
-    }
+  // The app waits for this promise before showing any page.
+  restoreSession(): Promise<void> {
+    return new Promise(resolve => {
+      if (!this.getToken()) {
+        resolve();
+        return;
+      }
 
-    return this.http.get<User>(`${this.apiUrl}/me`).pipe(
-      tap(user => this.currentUser = user),
-      catchError(() => {
-        this.logout();
-        return of(null);
-      })
-    );
+      this.http.get<User>(`${this.apiUrl}/me`).subscribe({
+        next: (user) => {
+          this.currentUser = user;
+          resolve();
+        },
+        error: () => {
+          this.logout();
+          resolve();
+        }
+      });
+    });
   }
 
   changePassword(currentPassword: string, newPassword: string): Observable<void> {

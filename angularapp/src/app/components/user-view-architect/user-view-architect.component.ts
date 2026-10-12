@@ -34,11 +34,11 @@ export class UserViewArchitectComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadArchitects();
-    this.architectService.getLocations().subscribe(locations => this.locations = locations || []);
+    this.architectService.getLocations().subscribe(locations => this.locations = locations);
   }
 
   loadArchitects(): void {
-    this.architectService.getAllArchitects().subscribe(architects => this.architects = architects || []);
+    this.architectService.getAllArchitects().subscribe(architects => this.architects = architects);
   }
 
   get hasFilters(): boolean {
@@ -50,12 +50,36 @@ export class UserViewArchitectComponent implements OnInit {
 
     return this.architects.filter(architect =>
       (!search ||
-        (architect.name || '').toLowerCase().includes(search) ||
-        (architect.expertise || '').toLowerCase().includes(search) ||
-        (architect.location || '').toLowerCase().includes(search)) &&
+        architect.name.toLowerCase().includes(search) ||
+        architect.expertise.toLowerCase().includes(search) ||
+        architect.location.toLowerCase().includes(search)) &&
       (!this.expertiseFilter || architect.expertise === this.expertiseFilter) &&
       (!this.locationFilter || architect.location === this.locationFilter)
     );
+  }
+
+  // Pagination: show 9 per page
+  page = 1;
+  pageSize = 9;
+
+  get totalPages(): number {
+    return Math.max(1, Math.ceil(this.filteredArchitects.length / this.pageSize));
+  }
+
+  // If filters make the list shorter, never stay on a page that no longer exists
+  get currentPage(): number {
+    return Math.min(this.page, this.totalPages);
+  }
+
+  get pagedArchitects(): Architect[] {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.filteredArchitects.slice(start, start + this.pageSize);
+  }
+
+  // Change page and jump back to the top of the page
+  goToPage(page: number): void {
+    this.page = page;
+    window.scrollTo(0, 0);
   }
 
   clearFilters(): void {
@@ -64,16 +88,13 @@ export class UserViewArchitectComponent implements OnInit {
     this.locationFilter = '';
   }
 
-  sendInquiry(architectId: number | undefined): void {
+  sendInquiry(architectId: number): void {
     const userId = this.authService.getUserId();
-    if (architectId === undefined || !userId) {
-      return;
-    }
 
     // If the user already has an open inquiry with this architect, ask before creating a new one.
     this.inquiryService.getInquiriesByUserId(userId).subscribe(inquiries => {
-      const ongoing = (inquiries || []).find(i =>
-        i.architect?.architectId === architectId && i.status !== 'Closed');
+      const ongoing = inquiries.find(i =>
+        i.architect.architectId === architectId && i.status !== 'Closed');
 
       if (ongoing) {
         this.ongoingInquiryId = ongoing.inquiryId;

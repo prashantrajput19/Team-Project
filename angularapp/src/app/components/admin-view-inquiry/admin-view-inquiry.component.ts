@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { ArchitectInquiry } from '../../models/architect-inquiry.model';
 import { ArchitectInquiryService } from '../../services/architect-inquery.service';
+import { AiService } from '../../services/ai.service';
 import { describeError } from '../../error-message';
 
 @Component({
@@ -24,13 +25,16 @@ export class AdminViewInquiryComponent implements OnInit {
   // Reply text typed under each inquiry, keyed by inquiryId.
   drafts: { [inquiryId: number]: string } = {};
 
+  // The inquiry Archie (AI) is writing a reply for right now
+  writingId = 0;
+
   // "Update Status" popup
   inquiryToUpdate?: ArchitectInquiry;
   newStatus = '';
   showStatusModal = false;
   isUpdating = false;
 
-  constructor(private inquiryService: ArchitectInquiryService) { }
+  constructor(private inquiryService: ArchitectInquiryService, private aiService: AiService) { }
 
   ngOnInit(): void {
     this.loadInquiries();
@@ -43,7 +47,7 @@ export class AdminViewInquiryComponent implements OnInit {
     this.inquiryService.getAllInquiries().subscribe({
       next: (inquiries) => {
         this.isLoading = false;
-        this.inquiries = inquiries || [];
+        this.inquiries = inquiries.sort((a, b) => b.inquiryId - a.inquiryId); // newest first
       },
       error: (error) => {
         this.isLoading = false;
@@ -53,7 +57,7 @@ export class AdminViewInquiryComponent implements OnInit {
   }
 
   get priorityOptions(): string[] {
-    const priorities = this.inquiries.map(i => i.priority).filter(p => !!p);
+    const priorities = this.inquiries.map(i => i.priority);
     return Array.from(new Set(priorities)).sort();
   }
 
@@ -66,12 +70,36 @@ export class AdminViewInquiryComponent implements OnInit {
 
     return this.inquiries.filter(inquiry =>
       (!search ||
-        (inquiry.message || '').toLowerCase().includes(search) ||
-        (inquiry.architect?.name || '').toLowerCase().includes(search) ||
-        (inquiry.user?.username || '').toLowerCase().includes(search)) &&
+        inquiry.message.toLowerCase().includes(search) ||
+        inquiry.architect.name.toLowerCase().includes(search) ||
+        inquiry.user.username.toLowerCase().includes(search)) &&
       (!this.statusFilter || inquiry.status === this.statusFilter) &&
       (!this.priorityFilter || inquiry.priority === this.priorityFilter)
     );
+  }
+
+  // Pagination: show 5 per page
+  page = 1;
+  pageSize = 5;
+
+  get totalPages(): number {
+    return Math.max(1, Math.ceil(this.filteredInquiries.length / this.pageSize));
+  }
+
+  // If filters make the list shorter, never stay on a page that no longer exists
+  get currentPage(): number {
+    return Math.min(this.page, this.totalPages);
+  }
+
+  get pagedInquiries(): ArchitectInquiry[] {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.filteredInquiries.slice(start, start + this.pageSize);
+  }
+
+  // Change page and jump back to the top of the page
+  goToPage(page: number): void {
+    this.page = page;
+    window.scrollTo(0, 0);
   }
 
   clearFilters(): void {
@@ -82,11 +110,28 @@ export class AdminViewInquiryComponent implements OnInit {
 
   // The reply area is shown unless the inquiry is closed with no messages.
   hasDetail(inquiry: ArchitectInquiry): boolean {
-    return inquiry.status !== 'Closed' || !!inquiry.subInquiries?.length;
+    return inquiry.status !== 'Closed' || inquiry.subInquiries.length > 0;
+  }
+
+  // Archie (AI) drafts a reply to the user (uses what the admin typed as notes)
+  writeWithAi(inquiry: ArchitectInquiry): void {
+    const id = inquiry.inquiryId;
+    this.writingId = id;
+
+    this.aiService.write({ type: 'reply', notes: this.drafts[id] || '', inquiryId: id }).subscribe({
+      next: (response) => {
+        this.writingId = 0;
+        this.drafts[id] = response.text;
+      },
+      error: (error) => {
+        this.writingId = 0;
+        this.errorMessage = describeError(error, 'Archie could not write the reply.');
+      }
+    });
   }
 
   sendReply(inquiry: ArchitectInquiry): void {
-    const id = inquiry.inquiryId!;
+    const id = inquiry.inquiryId;
     const message = (this.drafts[id] || '').trim();
 
     if (!message) {
@@ -106,7 +151,7 @@ export class AdminViewInquiryComponent implements OnInit {
 
   openStatusModal(inquiry: ArchitectInquiry): void {
     this.inquiryToUpdate = inquiry;
-    this.newStatus = inquiry.status ?? 'Pending';
+    this.newStatus = inquiry.status;
     this.showStatusModal = true;
   }
 
@@ -117,11 +162,6 @@ export class AdminViewInquiryComponent implements OnInit {
 
   confirmStatusUpdate(): void {
     const inquiry = this.inquiryToUpdate;
-
-    if (!inquiry || inquiry.inquiryId === undefined) {
-      return;
-    }
-
     this.isUpdating = true;
 
     this.inquiryService.updateInquiry(inquiry.inquiryId, { ...inquiry, status: this.newStatus }).subscribe({

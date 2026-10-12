@@ -41,12 +41,6 @@ export class AdminEditArchitectComponent implements OnInit {
 
   ngOnInit(): void {
     this.architectId = Number(this.route.snapshot.paramMap.get('id'));
-
-    if (!this.architectId) {
-      this.errorMessage = 'Architect ID is not available';
-      return;
-    }
-
     this.loadArchitect();
   }
 
@@ -56,9 +50,7 @@ export class AdminEditArchitectComponent implements OnInit {
     this.architectService.getArchitectById(this.architectId).subscribe({
       next: (architect) => {
         this.isLoading = false;
-        if (architect) {
-          this.architect = architect;
-        }
+        this.architect = architect;
       },
       error: (error) => {
         this.isLoading = false;

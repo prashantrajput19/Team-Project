@@ -21,6 +21,7 @@ import { UserViewFeedbackComponent } from './components/user-view-feedback/user-
 
 import { ArchitectPortfolioComponent } from './components/architect-portfolio/architect-portfolio.component';
 import { ChangePasswordComponent } from './components/change-password/change-password.component';
+import { AboutUsComponent } from './components/about-us/about-us.component';
 import { authGuard, guestGuard } from './guards/auth.guard';
 
 // authGuard: must be logged in (and have data.role, if given).
@@ -33,6 +34,7 @@ const routes: Routes = [
   { path: 'home', component: HomePageComponent, canActivate: [authGuard] },
   { path: 'portfolio/:id', component: ArchitectPortfolioComponent, canActivate: [authGuard] },
   { path: 'change-password', component: ChangePasswordComponent, canActivate: [authGuard] },
+  { path: 'about', component: AboutUsComponent, canActivate: [authGuard] },
 
   // Admin pages
   { path: 'admin', component: AdminControlPanelComponent, canActivate: [authGuard], data: { role: 'Admin' } },

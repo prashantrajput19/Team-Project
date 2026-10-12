@@ -65,17 +65,16 @@ export class HomePageComponent implements OnInit {
 
   ngOnInit(): void {
     this.architectService.getAllArchitects().subscribe(architects => {
-      const list = architects || [];
-      this.architectCount = list.length;
-      this.cityCount = new Set(list.map(a => a.location)).size;
+      this.architectCount = architects.length;
+      this.cityCount = new Set(architects.map(a => a.location)).size;
     });
 
     // Average rating of the top 3 architects only
     this.architectService.getTopRated().subscribe(top => {
-      this.topArchitects = top || [];
+      this.topArchitects = top;
       let total = 0;
       for (const a of this.topArchitects) {
-        total = total + (a.rating || 0);
+        total = total + a.rating;
       }
       this.averageRating = this.topArchitects.length ? total / this.topArchitects.length : 0;
     });

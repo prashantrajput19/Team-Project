@@ -1,0 +1,117 @@
+:host {
+    display: block;
+    --ill-bg: #121822;
+    --ill-grid: rgba(130, 170, 230, 0.09);
+    --ill-sheet: #1c3f6e;
+    --ill-sheet-grid: rgba(207, 224, 255, 0.12);
+    --ill-sheet-line: #cfe0ff;
+    --ill-card: #1b222d;
+    --ill-card-border: rgba(255, 255, 255, 0.1);
+    --ill-bar: rgba(255, 255, 255, 0.18);
+    --ill-bar-strong: rgba(255, 255, 255, 0.55);
+}
+
+:host-context(body.light) {
+    --ill-bg: #eaf0f8;
+    --ill-grid: rgba(40, 90, 170, 0.08);
+    --ill-sheet: #2559a5;
+    --ill-card: #ffffff;
+    --ill-card-border: rgba(20, 22, 26, 0.08);
+    --ill-bar: rgba(20, 22, 26, 0.12);
+    --ill-bar-strong: rgba(20, 22, 26, 0.6);
+}
+
+.signup-ill {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+}
+
+.bg { fill: var(--ill-bg); }
+.grid { stroke: var(--ill-grid); stroke-width: 1; }
+.ring { fill: none; stroke: var(--accent); stroke-width: 1.5; opacity: 0.18; }
+.ring-dash { stroke-dasharray: 4 10; opacity: 0.5; animation: spin 40s linear infinite; transform-origin: 330px 270px; }
+
+.sheet { fill: var(--ill-sheet); }
+.sheet-shadow { fill: #000; opacity: 0.2; }
+.sheet-grid { stroke: var(--ill-sheet-grid); stroke-width: 1; }
+.sheet-wrap { animation: float 7s ease-in-out infinite; }
+
+/* House lines are drawn, stay for a while, then start again */
+.draw {
+    fill: none;
+    stroke: var(--ill-sheet-line);
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 600;
+    stroke-dashoffset: 600;
+    animation: draw 6s ease-in-out infinite;
+}
+.d2 { animation-delay: 0.6s; }
+.d3 { animation-delay: 1.2s; }
+
+.dim { fill: none; stroke: var(--accent); stroke-width: 1.5; }
+.dim-box { fill: var(--accent); opacity: 0.85; }
+
+.pencil { animation: sketch 6s ease-in-out infinite; }
+.pencil-body { fill: var(--accent); }
+.pencil-tip { fill: #f3dfb8; }
+.pencil-cap { fill: #e0706b; }
+
+.card { fill: var(--ill-card); stroke: var(--ill-card-border); filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.25)); }
+.bar { fill: var(--ill-bar); }
+.bar.strong { fill: var(--ill-bar-strong); }
+.av { fill: var(--accent); }
+.plus { stroke: #1a1a1a; stroke-width: 3; stroke-linecap: round; }
+
+/* Checklist ticks pop in one by one */
+.ok { fill: var(--success); }
+.ok-t { fill: none; stroke: #ffffff; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.c1, .c2, .c3 { animation: pop 6s ease-in-out infinite; }
+.c2 { animation-delay: 0.5s; }
+.c3 { animation-delay: 1s; }
+
+.spark path { stroke: var(--accent); stroke-width: 3; stroke-linecap: round; }
+.spark { animation: twinkle 3s ease-in-out infinite; }
+.s2 { animation-delay: -1s; }
+.s3 { animation-delay: -2s; }
+
+.float-a { animation: float 6s ease-in-out infinite; }
+.float-b { animation: float 6s ease-in-out -3s infinite; }
+
+@keyframes draw {
+    0% { stroke-dashoffset: 600; }
+    45%, 85% { stroke-dashoffset: 0; }
+    100% { stroke-dashoffset: 600; }
+}
+
+@keyframes sketch {
+    0%, 100% { transform: translate(0, 0); }
+    25% { transform: translate(-30px, 40px); }
+    50% { transform: translate(-60px, 10px); }
+    75% { transform: translate(-20px, 60px); }
+}
+
+@keyframes pop {
+    0%, 20% { opacity: 0.2; }
+    35%, 90% { opacity: 1; }
+    100% { opacity: 0.2; }
+}
+
+@keyframes float {
+    50% { transform: translateY(-8px); }
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes twinkle {
+    50% { opacity: 0.25; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ring-dash, .sheet-wrap, .pencil, .c1, .c2, .c3, .spark, .float-a, .float-b { animation: none; }
+    .draw { animation: none; stroke-dashoffset: 0; }
+}

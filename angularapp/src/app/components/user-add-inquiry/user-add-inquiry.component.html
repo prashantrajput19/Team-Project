@@ -13,6 +13,7 @@
                 <span class="spinner"></span> Loading architect...
             </div>
         </div>
+        
 
         <div class="form-card" *ngIf="!isLoading && architect">
             <form #inquiryForm="ngForm" (ngSubmit)="save()" novalidate>
@@ -29,11 +30,19 @@
                     </div>
 
                     <span class="rating" *ngIf="architect.rating"><span class="star">&#9733;</span>{{ architect.rating }}</span>
-                    <span class="rating" *ngIf="!architect.rating">New</span>
+                    <span class="rating" *ngIf="!architect.rating">&#10024; Rising Star</span>
                 </div>
 
                 <div class="field">
-                    <label for="message">Message</label>
+                    <div class="label-row">
+                        <label for="message">Message</label>
+
+                        <button class="ai-write-btn" type="button" [disabled]="isWriting" (click)="writeWithAi()"
+                            title="Type a few words about your project, then let Archie write the message">
+                            <span class="spinner" *ngIf="isWriting"></span>
+                            {{ isWriting ? "Writing..." : "✨ Write with AI" }}
+                        </button>
+                    </div>
 
                     <textarea class="textarea" id="message" name="message" [(ngModel)]="message" #msg="ngModel"
                         required minlength="10"

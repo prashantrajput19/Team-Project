@@ -2,7 +2,6 @@ package com.examly.springapp.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,8 +18,11 @@ import com.examly.springapp.service.FeedbackService;
 @RestController
 @RequestMapping("/api/feedback")
 public class FeedbackController {
-    @Autowired
-    private FeedbackService feedbackService;
+    private final FeedbackService feedbackService;
+
+    public FeedbackController(FeedbackService feedbackService) {
+        this.feedbackService = feedbackService;
+    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -31,6 +33,11 @@ public class FeedbackController {
     @GetMapping
     public List<Feedback> getAllFeedback() {
         return feedbackService.getAllFeedback();
+    }
+
+    @GetMapping("/all")
+    public List<Feedback> getAllFeedbackIncludingDeleted() {
+        return feedbackService.getAllFeedbackIncludingDeleted();
     }
 
     @GetMapping("/user/{userId}")

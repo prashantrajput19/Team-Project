@@ -44,7 +44,15 @@
                 </div>
 
                 <div class="field">
-                    <label for="feedbackText">Feedback</label>
+                    <div class="label-row">
+                        <label for="feedbackText">Feedback</label>
+
+                        <button class="ai-write-btn" type="button" [disabled]="isWriting" (click)="writeWithAi()"
+                            title="Archie writes it from your stars and notes">
+                            <span class="spinner" *ngIf="isWriting"></span>
+                            {{ isWriting ? "Writing..." : "✨ Write with AI" }}
+                        </button>
+                    </div>
 
                     <textarea class="textarea" id="feedbackText" name="feedbackText" [(ngModel)]="feedbackText"
                         #text="ngModel" required minlength="10"

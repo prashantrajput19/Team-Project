@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 
 import { User } from '../../models/user.model';
 import { AuthService } from '../../services/auth.service';
+import { describeError } from '../../error-message';
 
 @Component({
   selector: 'app-signup',
@@ -55,17 +56,7 @@ export class SignupComponent {
 
       error: (error) => {
         this.isLoading = false;
-
-        if (error.status === 0) {
-          this.errorMessage =
-            'Unable to connect to the backend. Check backend URL, server and CORS.';
-        } else if (error.error?.message) {
-          this.errorMessage = error.error.message;
-        } else if (typeof error.error === 'string' && error.error) {
-          this.errorMessage = error.error;
-        } else {
-          this.errorMessage = 'Registration failed';
-        }
+        this.errorMessage = describeError(error, 'Registration failed');
       }
     });
   }

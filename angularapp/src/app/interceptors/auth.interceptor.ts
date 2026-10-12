@@ -1,34 +1,27 @@
-import { Injectable, Injector } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, catchError, throwError } from 'rxjs';
 
-import { AuthService } from '../services/auth.service';
-import { environment } from 'src/enviornments/enviornment';
-
-// URLs that work without being logged in, so no token is sent to them.
-const PUBLIC_PATHS = ['/api/login', '/api/register', '/api/otp/'];
-
+// Runs for every HTTP request the app makes.
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  // AuthService is fetched through the Injector (not the constructor)
-  // because AuthService itself uses HttpClient, which uses this interceptor.
-  constructor(private injector: Injector, private router: Router) { }
+  constructor(private router: Router) { }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    const isBackend = request.url.startsWith(environment.apiUrl);
-    const isPublic = PUBLIC_PATHS.some(path => request.url.includes(path));
     const token = localStorage.getItem('token');
 
-    if (isBackend && !isPublic && token) {
+    // Send the login token to the backend
+    if (token) {
       request = request.clone({ setHeaders: { Authorization: `Bearer ${token}` } });
     }
 
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
-        // Token expired or invalid: log out and go to the login page.
-        if (error.status === 401 && isBackend && !isPublic && !request.url.endsWith('/api/me')) {
-          this.injector.get(AuthService).logout();
+        // 401 = token expired or invalid: log out and go to the login page.
+        // (/api/me is skipped because AuthService.restoreSession() handles that one itself.)
+        if (error.status === 401 && token && !request.url.endsWith('/api/me')) {
+          localStorage.clear();
           this.router.navigate(['/login']);
         }
         return throwError(() => error);
